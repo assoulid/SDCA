@@ -1,0 +1,10 @@
+CREATE DATABASE participants;
+USE participants;
+
+create table participants( 
+	idParticipant smallint unsigned not null auto_increment,
+ 	nom Varchar(50), 
+	ajoue bool, 
+	lotGagne int, 
+	primary key (idParticipant)
+);
