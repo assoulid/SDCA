@@ -1,0 +1,23 @@
+# NodeJS
+
+## Installation
+
+```
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+## Usage
+
+Installer les dépendances et démarrer chaque service :
+```
+cd partie_dev/appliWeb
+npm install
+npm start
+```
+
+```
+cd partie_dev/serviceIdentification
+npm install
+npm start
+```
