@@ -1,0 +1,74 @@
+---
+- hosts: all_nodes
+  user: centos
+  tasks:
+    - name: Add docker repo
+      yum_repository:
+        name: docler-repo
+        description: Docker Repository
+        baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: https://yum.dockerproject.org/gpg
+      become: true
+
+    - name: Install Docker
+      yum:
+        name: docker-engine
+        state: latest
+      notify:
+        - Start docker
+      become: true
+
+    - name: Download consul
+      get_url:
+        url: https://releases.hashicorp.com/consul/0.7.1/consul_0.7.1_linux_amd64.zip
+        dest: /home/centos
+      become: true
+
+    - name: Install Unzip
+      yum:
+        name: unzip
+        state: latest
+      become: true
+
+    - name: Unarchive consul
+      unarchive:
+        src: /home/centos/consul_0.7.1_linux_amd64.zip
+        dest: /usr/local/bin/
+        copy: no
+      notify:
+        - Clean consul files
+      become: true
+
+    - name: Create consul data dir
+      file:
+        path: /var/consul.d
+        state: directory
+        mode: 0777
+      become: true
+
+    - name: Create consul config dir
+      file:
+        path: /etc/consul.d
+        state: directory
+        mode: 0777
+      become: true
+
+    - name: Install screen
+      yum:
+        name: screen
+        state: latest
+      become: true
+
+  handlers:
+    - name: Start docker
+      shell:
+        cmd: systemctl enable docker.service && systemctl start docker
+      become: true
+
+    - name: Clean consul files
+      file:
+        path: /home/centos/consul_0.7.1_linux_amd64.zip
+        state: absent
+      become: true
