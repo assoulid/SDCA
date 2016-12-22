@@ -7,6 +7,7 @@ RUN useradd w
 COPY config.py w.conf w.py /home/w/
 COPY prices /home/w/prices/
 RUN chown -R w:w /home/w/
+RUN chmod -R 700 /home/w/
 EXPOSE 8090
 USER w
 WORKDIR /home/w
