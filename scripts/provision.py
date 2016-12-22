@@ -8,7 +8,6 @@ import time
 STACK_NAME = "G4_Stack"
 B_HEAT_PATH = os.path.abspath("../templates/main.yaml")
 
-# Deployment of
 subprocess.call("openstack stack create --enable-rollback -t {} {}".format(B_HEAT_PATH, STACK_NAME), shell=True)
 
 
