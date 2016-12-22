@@ -1,0 +1,58 @@
+heat_template_version: 2015-04-30
+
+description: Template for microservices
+
+resources:
+  consul_server:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: 1
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          name: consul_server_%index%
+          key_name: cle_bastion
+          image: centos7
+          flavor: m1.small
+          networks:
+            - network: ReseauGroupe4
+
+  b:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: 1
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          name: b_%index%
+          key_name: cle_bastion
+          image: centos7
+          flavor: m1.small
+          networks:
+            - network: ReseauGroupe4
+
+  w:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: 1
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          name: w_%index%
+          key_name: cle_bastion
+          image: centos7
+          flavor: m1.small
+          networks:
+            - network: ReseauGroupe4
+
+outputs:
+  b:
+    description: IP addresses of b
+    value: { get_attr: [ b, first_address ] }
+  w:
+    description: IP addresses of w
+    value: { get_attr: [ w, first_address ] }
+
+  consul_server:
+    description: IP addresses of consul_servers
+    value: { get_attr: [ consul_server, first_address ] }
