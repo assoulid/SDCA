@@ -9,7 +9,7 @@ import os
 import pprint
 import sys
 from logging.handlers import RotatingFileHandler
-
+import requests
 from flask import Flask
 from flask import jsonify
 
@@ -49,6 +49,21 @@ def api_test():
     config.logger.info("*** End testing")
     add_headers(resp)
     return resp
+
+
+@app.route("/play/<id>")
+def api_play(id):
+    data = {"message": "w is in " + get_w_host()}
+    resp = jsonify(data)
+    resp.status_code = 200
+    add_headers(resp)
+    return resp
+
+
+def get_w_host():
+    w_info = requests.get('http://localhost:8500/v1/catalog/service/w').json()
+    host = w_info[0]['Address']
+    return host
 
 
 def configure_logger(logger, logfile):

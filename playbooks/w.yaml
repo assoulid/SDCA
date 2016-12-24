@@ -1,6 +1,7 @@
 ---
 - hosts: w
   user: centos
+  strategy: free
   tasks:
     - name: Send w microservice directory
       copy:
@@ -14,7 +15,7 @@
 
     - name: Run w docker container
       shell:
-        cmd: docker run -d -p 8090:8090 w:w
+        cmd: docker run --network=host -d -p 8090:8090 -p 8500:8500 w:w
       become: true
 
     - name: Run consul agent and join cluster
