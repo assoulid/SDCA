@@ -30,11 +30,5 @@ class BConfiguration(object):
     def get_b_port(self):
         return self.config.get("b", "port")
 
-    def get_b_tmpfile(self):
-        return self.config.get("b", "tmpfile")
-
-    def get_b_tempo(self):
-        return self.config.get("b", "tempo")
-
     def get_b_debug(self):
         return self.config.get("b", "debug")
