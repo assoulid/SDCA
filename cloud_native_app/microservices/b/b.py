@@ -53,15 +53,36 @@ def api_test():
 
 @app.route("/play/<id>")
 def api_play(id):
-    data = {"message": "w is in " + get_w_host()}
-    resp = jsonify(data)
+    w_instance = get_w_host()
+    w_response_raw = requests.get('http://{}:8090/play/{}'.format(w_instance, id)).json()
+    resp = jsonify(w_response_raw)
     resp.status_code = 200
-    add_headers(resp)
     return resp
 
 
 def get_w_host():
     w_info = requests.get('http://localhost:8500/v1/catalog/service/w').json()
+    """
+    w_info example output:
+    [
+        {
+            "Address": "10.0.1.78",
+            "CreateIndex": 62,
+            "ModifyIndex": 409,
+            "Node": "w-0",
+            "ServiceAddress": "",
+            "ServiceEnableTagOverride": false,
+            "ServiceID": "w",
+            "ServiceName": "w",
+            "ServicePort": 8090,
+            "ServiceTags": [],
+            "TaggedAddresses": {
+                "lan": "10.0.1.78",
+                "wan": "10.0.1.78"
+            }
+        }
+    ]
+    """
     host = w_info[0]['Address']
     return host
 
