@@ -1,7 +1,6 @@
 ---
 - hosts: w
   user: centos
-  strategy: free
   tasks:
     - name: Send w microservice directory
       copy:

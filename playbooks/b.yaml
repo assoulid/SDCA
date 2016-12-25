@@ -1,7 +1,6 @@
 ---
 - hosts: b
   user: centos
-  strategy: free
   tasks:
     - name: Send b microservice directory
       copy:

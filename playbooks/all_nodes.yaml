@@ -1,7 +1,6 @@
 ---
 - hosts: all_nodes
   user: centos
-  strategy: free
   tasks:
     - name: Add docker repo
       yum_repository:
@@ -31,11 +30,6 @@
       yum:
         name: python-pip
         state: latest
-      become: true
-
-    - name: Install docker-compose
-      pip:
-        name: docker-compose
       become: true
 
     - name: Download consul
