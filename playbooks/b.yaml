@@ -22,18 +22,6 @@
       shell:
         cmd: screen -m -d consul agent -data-dir=/var/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }} -config-dir=/etc/consul.d
 
-    - name: Setup repos
-      yum:
-        name: epel-release
-        state: latest
-      become: true
-
-    - name: Install pip
-      yum:
-        name: python-pip
-        state: latest
-      become: true
-
     - name: Install python-consul
       pip:
         name: python-consul

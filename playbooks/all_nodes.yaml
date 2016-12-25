@@ -21,6 +21,23 @@
         - Start docker
       become: true
 
+    - name: Setup repos
+      yum:
+        name: epel-release
+        state: latest
+      become: true
+
+    - name: Install pip
+      yum:
+        name: python-pip
+        state: latest
+      become: true
+
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
+      become: true
+
     - name: Download consul
       get_url:
         url: https://releases.hashicorp.com/consul/0.7.1/consul_0.7.1_linux_amd64.zip

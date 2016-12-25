@@ -27,6 +27,8 @@ while stack_status["stack_status"] != "CREATE_COMPLETE":
         print("Error deploying stack !")
         exit(-1)
 
+print("Stack creation successful.")
+
 # Extract instances ips
 b_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "b", stack_status["outputs"])))[0]
