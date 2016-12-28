@@ -1,11 +1,31 @@
 ---
 - hosts: b
   user: centos
+  vars:
+   os_pass: "{{ lookup('env','OS_PASSWORD') }}"
   tasks:
+
     - name: Send b microservice directory
       copy:
         src: ../cloud_native_app/microservices/b
         dest: /home/centos/
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    - name: Stop b docker container if already running
+      shell:
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=b:b))
+      ignore_errors: yes
 
     - name: Build b docker image
       shell:
@@ -14,26 +34,12 @@
 
     - name: Run b docker container
       shell:
-        cmd: docker run --network=host -d -p 8090:8090 -p 8500:8500 b:b
-      become: true
-
-    - name: Run consul agent and join cluster
-      shell:
-        cmd: screen -m -d consul agent -data-dir=/var/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }} -config-dir=/etc/consul.d
-
-    - name: Install python-consul
-      pip:
-        name: python-consul
-      become: true
-
-    - name: Install requests
-      pip:
-        name: requests
+        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8090:8090 -p 8500:8500 -p 5000:5000 b:b
       become: true
 
     - name: Register b service
-      consul:
-        service_name: b
-        service_port: 8090
-        script: curl http://localhost:8090/
-        interval: 10s
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_b.json') }}"
+        body_format: json

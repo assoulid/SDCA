@@ -2,6 +2,25 @@ heat_template_version: 2015-04-30
 
 description: Template for microservices
 
+parameters:
+  b_instances_count:
+    type: number
+    label: B instances count
+    default: 1
+    description: Number of b instances to deploy
+
+  w_instances_count:
+    type: number
+    label: W instances count
+    default: 1
+    description: Number of w instances to deploy
+
+  mysql_instances_count:
+    type: number
+    label: Mysql instances count
+    default: 1
+    description: Number of mysql instances to deploy
+
 resources:
   consul_server:
     type: OS::Heat::ResourceGroup
@@ -20,7 +39,7 @@ resources:
   b:
     type: OS::Heat::ResourceGroup
     properties:
-      count: 1
+      count: { get_param: b_instances_count }
       resource_def:
         type: OS::Nova::Server
         properties:
@@ -34,11 +53,25 @@ resources:
   w:
     type: OS::Heat::ResourceGroup
     properties:
-      count: 1
+      count: { get_param: w_instances_count }
       resource_def:
         type: OS::Nova::Server
         properties:
           name: w_%index%
+          key_name: cle_bastion
+          image: centos7
+          flavor: m1.small
+          networks:
+            - network: ReseauGroupe4
+
+  mysql:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: mysql_instances_count }
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          name: mysql_%index%
           key_name: cle_bastion
           image: centos7
           flavor: m1.small
@@ -56,3 +89,7 @@ outputs:
   consul_server:
     description: IP addresses of consul_servers
     value: { get_attr: [ consul_server, first_address ] }
+
+  mysql:
+    description: IP addresses of mysql instances
+    value: { get_attr: [ mysql, first_address ] }

@@ -3,17 +3,17 @@
 
 
 """Testing service"""
-
+import json
 import logging
 import os
 import pprint
 import sys
 from logging.handlers import RotatingFileHandler
+
+import config
 import requests
 from flask import Flask
 from flask import jsonify
-
-import config
 
 # Initialise Flask
 app = Flask(__name__)
@@ -21,21 +21,20 @@ app.debug = True
 
 # Affect app logger to a global variable so logger can be used elsewhere.
 config.logger = app.logger
+KEYSTONE_URL = "http://10.11.50.26:5000/v3/auth/tokens"
+SWIFT_CONTAINER = "prizes_container"
 
 
 @app.route("/", methods=["GET"])
 def api_root():
     """Root url, provide service name and version. Used for consul health checks"""
     data = {
-        "Service": config.w.NAME,
-        "Version": config.w.VERSION
+        "Service": config.b.NAME,
+        "Version": config.b.VERSION
     }
 
     resp = jsonify(data)
     resp.status_code = 200
-
-    resp.headers["AuthorSite"] = "https://github.com/uggla/openstack_lab"
-
     add_headers(resp)
     return resp
 
@@ -53,14 +52,44 @@ def api_test():
 
 @app.route("/play/<id>")
 def api_play(id):
-    w_instance = get_w_host()
-    w_response_raw = requests.get('http://{}:8090/play/{}'.format(w_instance, id)).json()
-    resp = jsonify(w_response_raw)
+    w_instance_host, w_port = get_w_host_port()
+    result = requests.get('http://{}:{}/play/{}'.format(w_instance_host, w_port, id)).text
+
+    send_result_to_swift(id, result)
+
+    resp = jsonify({"message": "done"})
     resp.status_code = 200
+    add_headers(resp)
     return resp
 
 
-def get_w_host():
+def send_result_to_swift(id, result):
+    swift_endpoint, token = get_keystone_token()
+    requests.put(swift_endpoint + "/{}/{}".format(SWIFT_CONTAINER, id)
+                 , data=result
+                 , headers={'Content-Type': 'application/json',
+                            'X-Auth-Token': token})
+
+
+def get_keystone_token():
+    keystone_request_body = {'auth': {'identity': {'methods': ['password'], 'password': {
+        'user': {'name': 'groupe4', 'domain': {'name': 'Default'}, 'password': os.environ['OS_PASSWORD']}}}}}
+
+    keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
+                                      data=json.dumps(keystone_request_body))
+
+    print(keystone_response.json())
+    token = keystone_response.headers['X-Subject-Token']
+
+    swift_endpoint = list(filter(lambda x: x["interface"] == "public",
+                                 list(filter(lambda c: c['name'] == 'swift',
+                                             keystone_response.json()['token']['catalog']))[0][
+                                     'endpoints']))[0]['url']
+
+    return swift_endpoint, token
+
+
+def get_w_host_port():
     w_info = requests.get('http://localhost:8500/v1/catalog/service/w').json()
     """
     w_info example output:
@@ -83,8 +112,8 @@ def get_w_host():
         }
     ]
     """
-    host = w_info[0]['Address']
-    return host
+    host, port = w_info[0]['Address'], w_info[0]['ServicePort']
+    return host, port
 
 
 def configure_logger(logger, logfile):

@@ -10,6 +10,7 @@ RUN chown -R b:b /home/b/
 RUN chmod -R 700 /home/b/
 EXPOSE 8090
 EXPOSE 8500
+EXPOSE 5000
 USER b
 WORKDIR /home/b
 CMD ["./b.py"]

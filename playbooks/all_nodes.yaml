@@ -2,9 +2,10 @@
 - hosts: all_nodes
   user: centos
   tasks:
+
     - name: Add docker repo
       yum_repository:
-        name: docler-repo
+        name: docker-repo
         description: Docker Repository
         baseurl: https://yum.dockerproject.org/repo/main/centos/7/
         enabled: yes
@@ -18,18 +19,6 @@
         state: latest
       notify:
         - Start docker
-      become: true
-
-    - name: Setup repos
-      yum:
-        name: epel-release
-        state: latest
-      become: true
-
-    - name: Install pip
-      yum:
-        name: python-pip
-        state: latest
       become: true
 
     - name: Download consul
