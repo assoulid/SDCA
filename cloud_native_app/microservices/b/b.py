@@ -14,6 +14,7 @@ import config
 import requests
 from flask import Flask
 from flask import jsonify
+from mysql import connector
 
 # Initialise Flask
 app = Flask(__name__)
@@ -39,28 +40,44 @@ def api_root():
     return resp
 
 
-@app.route("/test")
-def api_test():
-    config.logger.info("*** Start testing ***")
-    data = {"message": "Hello"}
-    resp = jsonify(data)
-    resp.status_code = 200
-    config.logger.info("*** End testing")
-    add_headers(resp)
-    return resp
-
-
 @app.route("/play/<id>")
 def api_play(id):
-    w_instance_host, w_port = get_w_host_port()
-    result = requests.get('http://{}:{}/play/{}'.format(w_instance_host, w_port, id)).text
+    try:
+        w_instance_host, w_port = get_service_instance('w')
+        result = requests.get('http://{}:{}/play/{}'.format(w_instance_host, w_port, id)).text
 
-    send_result_to_swift(id, result)
+        update_user_status(id)
+        send_result_to_swift(id, result)
 
-    resp = jsonify({"message": "done"})
-    resp.status_code = 200
+    except:
+        resp = get_response(False)
+        return resp
+
+    resp = get_response(True)
+    return resp
+
+
+def get_response(success):
+    resp = jsonify({"message": "done" if success else "failed"})
+    resp.status_code = 200 if success else 500
     add_headers(resp)
     return resp
+
+
+def update_user_status(id):
+    mysql_instance_host, mysql_port = get_service_instance('mysql')
+
+    mysql_connection = connector.connect(host=mysql_instance_host, port=mysql_port,
+                                         user='root', password='group4',
+                                         database='prestashop')
+
+    user_won_query = "INSERT INTO has_played VALUES (%s, %s)"
+
+    cursor = mysql_connection.cursor()
+    cursor.execute(user_won_query, (id, True))
+    mysql_connection.commit()
+
+    mysql_connection.close()
 
 
 def send_result_to_swift(id, result):
@@ -78,7 +95,6 @@ def get_keystone_token():
     keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
                                       data=json.dumps(keystone_request_body))
 
-    print(keystone_response.json())
     token = keystone_response.headers['X-Subject-Token']
 
     swift_endpoint = list(filter(lambda x: x["interface"] == "public",
@@ -89,30 +105,30 @@ def get_keystone_token():
     return swift_endpoint, token
 
 
-def get_w_host_port():
-    w_info = requests.get('http://localhost:8500/v1/catalog/service/w').json()
+def get_service_instance(service_name):
+    service_info = requests.get('http://localhost:8500/v1/catalog/service/{}'.format(service_name)).json()
     """
-    w_info example output:
-    [
-        {
-            "Address": "10.0.1.78",
-            "CreateIndex": 62,
-            "ModifyIndex": 409,
-            "Node": "w-0",
-            "ServiceAddress": "",
-            "ServiceEnableTagOverride": false,
-            "ServiceID": "w",
-            "ServiceName": "w",
-            "ServicePort": 8090,
-            "ServiceTags": [],
-            "TaggedAddresses": {
-                "lan": "10.0.1.78",
-                "wan": "10.0.1.78"
+        w_info example output:
+        [
+            {
+                "Address": "10.0.1.78",
+                "CreateIndex": 62,
+                "ModifyIndex": 409,
+                "Node": "w-0",
+                "ServiceAddress": "",
+                "ServiceEnableTagOverride": false,
+                "ServiceID": "w",
+                "ServiceName": "w",
+                "ServicePort": 8090,
+                "ServiceTags": [],
+                "TaggedAddresses": {
+                    "lan": "10.0.1.78",
+                    "wan": "10.0.1.78"
+                }
             }
-        }
-    ]
-    """
-    host, port = w_info[0]['Address'], w_info[0]['ServicePort']
+        ]
+        """
+    host, port = service_info[0]['Address'], service_info[0]['ServicePort']
     return host, port
 
 
