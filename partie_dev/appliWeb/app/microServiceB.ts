@@ -26,6 +26,9 @@ export class MicroServiceB {
         console.log("Param id : "+aux)
         if(aux != null && aux !== ""){
             this.id = +aux;
+			this.getStatus(aux).subscribe(data=>{
+                this.aJoue = data.aJoue;
+			})
         }
     }
 
