@@ -3,7 +3,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
 apt-get install -y python3 python3-flask && \
 apt-get install -y python3-pip && \
-pip3 install requests
+pip3 install requests && pip3 install mysql-connector
 RUN useradd b
 COPY config.py b.conf b.py /home/b/
 RUN chown -R b:b /home/b/

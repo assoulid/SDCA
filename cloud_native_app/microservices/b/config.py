@@ -8,7 +8,7 @@ b = None
 
 
 def initialise_b():
-    """Define w global object so it can be called from anywhere."""
+    """Define b global object so it can be called from anywhere."""
     global b
     b = B()
 
@@ -17,7 +17,6 @@ class B(object):
     def __init__(self):
         self.NAME = "Microservice b"
         self.VERSION = "0.1"
-        #
         # Configuration file
         self.conf_file = BConfiguration("b.conf")
 
