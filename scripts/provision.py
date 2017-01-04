@@ -8,13 +8,15 @@ import time
 STACK_NAME = "G4_Stack"
 HOT_PATH = os.path.abspath("../templates/main.yaml")
 
+CONSUL_INSTANCES_COUNT = 1
 B_INSTANCES_COUNT = 1
 W_INSTANCES_COUNT = 1
 MYSQL_INSTANCES_COUNT = 1
 
 subprocess.call(
-    "openstack stack create --enable-rollback -t {} {} --parameter b_instances_count={} --parameter w_instances_count={} --parameter mysql_instances_count={}".format(
-        HOT_PATH, STACK_NAME, B_INSTANCES_COUNT, W_INSTANCES_COUNT, MYSQL_INSTANCES_COUNT), shell=True)
+    "openstack stack create -t {} {} --parameter b_instances_count={} --parameter w_instances_count={} --parameter mysql_instances_count={} --parameter consul_server_instances_count={}".format(
+        HOT_PATH, STACK_NAME, B_INSTANCES_COUNT, W_INSTANCES_COUNT, MYSQL_INSTANCES_COUNT, CONSUL_INSTANCES_COUNT),
+    shell=True)
 
 
 def get_stack_status():

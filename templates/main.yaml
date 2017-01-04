@@ -3,6 +3,12 @@ heat_template_version: 2015-04-30
 description: Template for microservices
 
 parameters:
+  consul_server_instances_count:
+    type: number
+    label: Consul server instances count
+    default: 1
+    description: Number of consul server instances to deploy
+
   b_instances_count:
     type: number
     label: B instances count
@@ -22,74 +28,60 @@ parameters:
     description: Number of mysql instances to deploy
 
 resources:
-  consul_server:
+
+  consul_servers:
     type: OS::Heat::ResourceGroup
     properties:
-      count: 1
+      count: { get_param: consul_server_instances_count }
       resource_def:
-        type: OS::Nova::Server
+        type: instance_with_volume.yaml
         properties:
-          name: consul_server_%index%
-          key_name: cle_bastion
-          image: centos7
-          flavor: m1.small
-          networks:
-            - network: ReseauGroupe4
+          service_name: "consul_server"
+          instance_index: "%index%"
 
-  b:
-    type: OS::Heat::ResourceGroup
-    properties:
-      count: { get_param: b_instances_count }
-      resource_def:
-        type: OS::Nova::Server
-        properties:
-          name: b_%index%
-          key_name: cle_bastion
-          image: centos7
-          flavor: m1.small
-          networks:
-            - network: ReseauGroupe4
-
-  w:
+  w_servers:
     type: OS::Heat::ResourceGroup
     properties:
       count: { get_param: w_instances_count }
       resource_def:
-        type: OS::Nova::Server
+        type: instance_with_volume.yaml
         properties:
-          name: w_%index%
-          key_name: cle_bastion
-          image: centos7
-          flavor: m1.small
-          networks:
-            - network: ReseauGroupe4
+          service_name: "w"
+          instance_index: "%index%"
 
-  mysql:
+  b_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: b_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "b"
+          instance_index: "%index%"
+
+  mysql_servers:
     type: OS::Heat::ResourceGroup
     properties:
       count: { get_param: mysql_instances_count }
       resource_def:
-        type: OS::Nova::Server
+        type: instance_with_volume.yaml
         properties:
-          name: mysql_%index%
-          key_name: cle_bastion
-          image: centos7
-          flavor: m1.small
-          networks:
-            - network: ReseauGroupe4
+          service_name: "mysql"
+          instance_index: "%index%"
 
 outputs:
   b:
     description: IP addresses of b
-    value: { get_attr: [ b, first_address ] }
+    value: { get_attr: [ b_servers, ip_addresses ] }
+
   w:
     description: IP addresses of w
-    value: { get_attr: [ w, first_address ] }
+    value: { get_attr: [ w_servers, ip_addresses ] }
 
   consul_server:
     description: IP addresses of consul_servers
-    value: { get_attr: [ consul_server, first_address ] }
+    value: { get_attr: [ consul_servers, ip_addresses ] }
 
   mysql:
     description: IP addresses of mysql instances
-    value: { get_attr: [ mysql, first_address ] }
+    value: { get_attr: [ mysql_servers, ip_addresses ] }
