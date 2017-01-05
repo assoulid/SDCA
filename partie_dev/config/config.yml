@@ -1,4 +1,4 @@
 host     : 'localhost'
 user     : 'root'
-password : 'root'
-database : 'SDCA'
+password : 'group4'
+database : 'prestashop'
