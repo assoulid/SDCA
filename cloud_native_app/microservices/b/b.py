@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import pprint
+import random
 import sys
 from logging.handlers import RotatingFileHandler
 
@@ -46,35 +47,40 @@ def api_play(id):
         w_instance_host, w_port = get_service_instance('w')
         result = requests.get('http://{}:{}/play/{}'.format(w_instance_host, w_port, id)).text
 
-        update_user_status(id)
-        send_result_to_swift(id, result)
+        player_won = random.choice([True, False])
+
+        if player_won:
+            send_result_to_swift(id, result)
+
+        update_user_status(id, player_won)
 
     except:
-        resp = get_response(False)
+        resp = get_response(False, None)
         return resp
 
-    resp = get_response(True)
+    resp = get_response(True, player_won)
     return resp
 
 
-def get_response(success):
-    resp = jsonify({"message": "done" if success else "failed"})
+def get_response(success, player_won):
+    resp = jsonify({"message": "done" if success else "failed",
+                    "has_won": player_won})
     resp.status_code = 200 if success else 500
     add_headers(resp)
     return resp
 
 
-def update_user_status(id):
+def update_user_status(id, player_won):
     mysql_instance_host, mysql_port = get_service_instance('mysql')
 
     mysql_connection = connector.connect(host=mysql_instance_host, port=mysql_port,
                                          user='root', password='group4',
                                          database='prestashop')
 
-    user_won_query = "INSERT INTO has_played VALUES (%s, %s)"
+    user_status_query = "INSERT INTO has_played VALUES (%s, %s)"
 
     cursor = mysql_connection.cursor()
-    cursor.execute(user_won_query, (id, True))
+    cursor.execute(user_status_query, (id, player_won))
     mysql_connection.commit()
 
     mysql_connection.close()
@@ -89,8 +95,23 @@ def send_result_to_swift(id, result):
 
 
 def get_keystone_token():
-    keystone_request_body = {'auth': {'identity': {'methods': ['password'], 'password': {
-        'user': {'name': 'groupe4', 'domain': {'name': 'Default'}, 'password': os.environ['OS_PASSWORD']}}}}}
+    keystone_request_body = \
+        {
+            'auth': {
+                'identity': {
+                    'methods': ['password'],
+                    'password': {
+                        'user': {
+                            'name': 'groupe4',
+                            'domain': {
+                                'name': 'Default'
+                            },
+                            'password': os.environ['OS_PASSWORD']
+                        }
+                    }
+                }
+            }
+        }
 
     keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
                                       data=json.dumps(keystone_request_body))
@@ -127,7 +148,7 @@ def get_service_instance(service_name):
                 }
             }
         ]
-        """
+    """
     host, port = service_info[0]['Address'], service_info[0]['ServicePort']
     return host, port
 
