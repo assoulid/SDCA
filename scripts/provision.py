@@ -12,10 +12,11 @@ CONSUL_INSTANCES_COUNT = 1
 B_INSTANCES_COUNT = 1
 W_INSTANCES_COUNT = 1
 MYSQL_INSTANCES_COUNT = 1
+APPLIWEB_INSTANCES_COUNT = 1
 
 subprocess.call(
-    "openstack stack create -t {} {} --parameter b_instances_count={} --parameter w_instances_count={} --parameter mysql_instances_count={} --parameter consul_server_instances_count={}".format(
-        HOT_PATH, STACK_NAME, B_INSTANCES_COUNT, W_INSTANCES_COUNT, MYSQL_INSTANCES_COUNT, CONSUL_INSTANCES_COUNT),
+    "openstack stack create -t {} {} --parameter b_instances_count={} --parameter w_instances_count={} --parameter mysql_instances_count={} --parameter consul_server_instances_count={} --parameter appliWeb_instances_count={}".format(
+        HOT_PATH, STACK_NAME, B_INSTANCES_COUNT, W_INSTANCES_COUNT, MYSQL_INSTANCES_COUNT, CONSUL_INSTANCES_COUNT, APPLIWEB_INSTANCES_COUNT),
     shell=True)
 
 
@@ -46,6 +47,8 @@ consul_server_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "consul_server", stack_status["outputs"])))[0]
 mysql_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "mysql", stack_status["outputs"])))[0]
+appliWeb_instances_ips = list(
+    map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "mysql", stack_status["outputs"])))[0]
 
 with open("/etc/ansible/hosts", "w") as hosts:
     hosts.write("[b]\n")
@@ -63,6 +66,10 @@ with open("/etc/ansible/hosts", "w") as hosts:
     hosts.write("[mysql]\n")
     for ms in mysql_instances_ips:
         hosts.write(ms + "\n")
+
+    hosts.write("[appliWeb]\n")
+    for aw in appliWeb_instances_ips:
+        hosts.write(aw + "\n")
 
     hosts.write("[all_nodes]\n")
     for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips:

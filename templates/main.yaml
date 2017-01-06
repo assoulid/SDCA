@@ -27,6 +27,12 @@ parameters:
     default: 1
     description: Number of mysql instances to deploy
 
+  appliWeb_instances_count:
+    type: number
+    label: AppliWeb instances count
+    default: 1
+    description: Number of appliWeb instances to deploy
+
 resources:
 
   consul_servers:
@@ -69,6 +75,16 @@ resources:
           service_name: "mysql"
           instance_index: "%index%"
 
+  appliWeb_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: appliWeb_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "appliWeb"
+          instance_index: "%index%"
+
 outputs:
   b:
     description: IP addresses of b
@@ -85,3 +101,7 @@ outputs:
   mysql:
     description: IP addresses of mysql instances
     value: { get_attr: [ mysql_servers, ip_addresses ] }
+
+  appliWeb:
+    description: IP addresses of appliWeb instances
+    value: { get_attr: [ appliWeb_servers, ip_addresses ] }
