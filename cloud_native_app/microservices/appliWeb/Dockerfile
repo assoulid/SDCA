@@ -13,7 +13,7 @@ EXPOSE 80
 USER appliWeb
 WORKDIR /home/appliWeb
 RUN npm install
-CMD ["npm", "start"]
+CMD ["sudo", "npm", "start"]
 
 
 
