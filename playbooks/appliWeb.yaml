@@ -34,7 +34,7 @@
 
     - name: Run appliWeb docker container
       shell:
-        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8090:8090 appli_web:appli_web
+        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 80:80 appli_web:appli_web
       become: true
 
     - name: Register appliWeb service
