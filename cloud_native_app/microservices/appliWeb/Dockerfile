@@ -12,7 +12,7 @@ RUN chmod -R 700 /home/appliWeb/
 EXPOSE 80
 USER appliWeb
 WORKDIR /home/appliWeb
-CMD ["sudo npm start"]
+CMD ["npm start"]
 
 
 
