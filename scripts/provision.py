@@ -48,7 +48,7 @@ consul_server_instances_ips = list(
 mysql_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "mysql", stack_status["outputs"])))[0]
 appliWeb_instances_ips = list(
-    map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "mysql", stack_status["outputs"])))[0]
+    map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "appliWeb", stack_status["outputs"])))[0]
 
 with open("/etc/ansible/hosts", "w") as hosts:
     hosts.write("[b]\n")
