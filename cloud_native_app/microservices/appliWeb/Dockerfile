@@ -9,11 +9,11 @@ COPY app index.html /home/appliWeb/
 COPY bs-config.json package.json systemjs.config.js tsconfig.json /home/appliWeb/
 RUN chown -R appliWeb:appliWeb /home/appliWeb/
 RUN chmod -R 700 /home/appliWeb/
-EXPOSE 80
+EXPOSE 3000
 USER appliWeb
 WORKDIR /home/appliWeb
 RUN npm install
-CMD ["sudo", "npm", "start"]
+CMD ["npm", "start"]
 
 
 
