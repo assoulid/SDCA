@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""Testing service"""
+"""b service"""
 import json
 import logging
 import os
@@ -29,7 +29,7 @@ SWIFT_CONTAINER = "prizes_container"
 
 @app.route("/", methods=["GET"])
 def api_root():
-    """Root url, provide service name and version. Used for consul health checks"""
+    """Used for consul health checks"""
     data = {
         "Service": config.b.NAME,
         "Version": config.b.VERSION
