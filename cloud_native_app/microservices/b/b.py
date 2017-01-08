@@ -54,7 +54,8 @@ def api_play(id):
 
         update_user_status(id, player_won)
 
-    except:
+    except Exception as e:
+        print(e)
         resp = get_response(False, None)
         return resp
 

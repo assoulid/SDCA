@@ -24,17 +24,17 @@
 
     - name: Stop appliWeb docker container if already running
       shell:
-        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=appliWeb:appliWeb))
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=appli_web:appli_web))
       ignore_errors: yes
 
     - name: Build b docker image
       shell:
         chdir: ~/appliWeb
-        cmd: sudo docker build -t appliWeb:appliWeb .
+        cmd: sudo docker build -t appli_web:appli_web .
 
     - name: Run appliWeb docker container
       shell:
-        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8090:8090 appliWeb:appliWeb
+        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8090:8090 appli_web:appli_web
       become: true
 
     - name: Register appliWeb service

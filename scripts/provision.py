@@ -37,6 +37,7 @@ while stack_status["stack_status"] != "CREATE_COMPLETE":
         print("Error deploying stack !")
         exit(-1)
 
+
 # Create and associate a floating ip address to appliWeb_0
 # TODO : Create and associate an ip to ALL appliWeb instances
 def create_floating_ip():
@@ -44,8 +45,10 @@ def create_floating_ip():
         subprocess.check_output("openstack floating ip create external-network -f json", shell=True).decode())
     return json_stack_state
 
+
 float_ip = create_floating_ip()
-subprocess.check_output("openstack server add floating ip appliWeb_0 {}".format(float_ip["floating_ip_address"]), shell=True)
+subprocess.check_output("openstack server add floating ip appliWeb_0 {}".format(float_ip["floating_ip_address"]),
+                        shell=True)
 
 print("Stack creation successful.")
 
