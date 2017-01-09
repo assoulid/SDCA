@@ -13,7 +13,6 @@ from logging.handlers import RotatingFileHandler
 
 import config
 import requests
-import swiftclient
 from flask import Flask
 from flask import jsonify
 from mysql import connector
@@ -71,6 +70,46 @@ def get_response(success, player_won):
     return resp
 
 
+def send_result_to_swift(id, result):
+    swift_endpoint, token = get_keystone_token()
+    requests.put(swift_endpoint + "/{}/{}".format(SWIFT_CONTAINER, id)
+                 , data=result
+                 , headers={'Content-Type': 'application/json',
+                            'X-Auth-Token': token})
+
+
+def get_keystone_token():
+    keystone_request_body = \
+        {
+            'auth': {
+                'identity': {
+                    'methods': ['password'],
+                    'password': {
+                        'user': {
+                            'name': 'groupe4',
+                            'domain': {
+                                'name': 'Default'
+                            },
+                            'password': os.environ['OS_PASSWORD']
+                        }
+                    }
+                }
+            }
+        }
+
+    keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
+                                      data=json.dumps(keystone_request_body))
+
+    token = keystone_response.headers['X-Subject-Token']
+
+    swift_endpoint = list(filter(lambda x: x["interface"] == "public",
+                                 list(filter(lambda c: c['name'] == 'swift',
+                                             keystone_response.json()['token']['catalog']))[0][
+                                     'endpoints']))[0]['url']
+
+    return swift_endpoint, token
+
+
 def update_user_status(id, player_won):
     mysql_instance_host, mysql_port = get_service_instance('mysql')
 
@@ -78,25 +117,13 @@ def update_user_status(id, player_won):
                                          user='root', password='group4',
                                          database='prestashop')
 
-    user_status_query = "INSERT INTO has_played VALUES (%s, %s)"
+    user_status_query = "INSERT INTO has_played VALUES (%s, %s,%s)"
 
     cursor = mysql_connection.cursor()
-    cursor.execute(user_status_query, (id, player_won))
+    cursor.execute(user_status_query, (id, True, player_won))
     mysql_connection.commit()
 
     mysql_connection.close()
-
-
-def send_result_to_swift(id, result):
-    swift_connexion = swiftclient.client.Connection(
-        authurl=KEYSTONE_URL,
-        user="groupe4",
-        key=os.environ['OS_PASSWORD']
-    )
-
-    swift_connexion.put_object(SWIFT_CONTAINER, id, result)
-
-    swift_connexion.close()
 
 
 def get_service_instance(service_name):

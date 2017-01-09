@@ -1,4 +1,9 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 import base64
+import json
 import logging
 import os
 import pprint
@@ -8,11 +13,14 @@ from logging.handlers import RotatingFileHandler
 
 import config
 import swiftclient
+import requests
 from flask import Flask
 from flask import Response
 from flask import jsonify
 
 # Initialise Flask
+from flask import make_response
+
 app = Flask(__name__)
 app.debug = True
 
@@ -20,37 +28,65 @@ app.debug = True
 config.logger = app.logger
 
 # TODO : retirer le mot de passe en clair
-user = 'groupe4'
-password = 'zH0lJRtRhVU='
-authurl = 'http://10.11.50.26:5000/v3/auth/tokens'
+KEYSTONE_URL = "http://10.11.50.26:5000/v3/auth/tokens"
+SWIFT_CONTAINER = "prizes_container"
 
 
 @app.route("/<id>")
 def swift_get(id):
-    try:
-        swift_connexion = swiftclient.client.Connection(
-            authurl=authurl,
-            user=user,
-            key=password
-        )
-        headers, object_body = swift_connexion.get_object('prizes_container', id)
-        swift_connexion.close()
+    object_body = get_image_from_swift(id)
 
-        # decodage de l'image
+    # decodage de l'image
 
-        img = object_body["img"].encode("ascii")
-        img = base64.b64decode(img)
+    img = object_body["img"].encode("ascii")
+    img = base64.b64decode(img)
 
-        resp = Response(img)
-        resp.status_code = 200
+    resp = make_response(img)
+    resp.status_code = 200
 
-        resp.headers["Content-Type"] = "image/jpeg"
+    resp.headers["Content-Type"] = "image/jpeg"
 
-        add_headers(resp)
-        return resp
+    add_headers(resp)
+    return resp
 
-    except swiftclient.exceptions.ClientException:
-        print(traceback.format_exc())
+
+def get_image_from_swift(id):
+    swift_endpoint, token = get_keystone_token()
+    image = requests.get(swift_endpoint + "/{}/{}".format(SWIFT_CONTAINER, id), headers={'X-Auth-Token': token}).json()
+    return image
+
+
+def get_keystone_token():
+    keystone_request_body = \
+        {
+            'auth': {
+                'identity': {
+                    'methods': ['password'],
+                    'password': {
+                        'user': {
+                            'name': 'groupe4',
+                            'domain': {
+                                'name': 'Default'
+                            },
+                            'password': os.environ['OS_PASSWORD']
+                        }
+                    }
+                }
+            }
+        }
+
+    keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
+                                      data=json.dumps(keystone_request_body))
+
+    token = keystone_response.headers['X-Subject-Token']
+
+    swift_endpoint = list(filter(lambda x: x["interface"] == "public",
+                                 list(filter(lambda c: c['name'] == 'swift',
+                                             keystone_response.json()['token']['catalog']))[0][
+                                     'endpoints']))[0]['url']
+
+    return swift_endpoint, token
+
 
 @app.route("/", methods=["GET"])
 def api_root():
@@ -76,7 +112,7 @@ def configure_logger(logger, logfile):
     file_handler = RotatingFileHandler(logfile, "a", 1000000, 1)
 
     # Add logger to file
-    if (config.w.conf_file.get_w_debug().title() == 'True'):
+    if config.p.conf_file.get_p_debug().title() == 'True':
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)
