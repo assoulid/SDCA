@@ -3,8 +3,8 @@ var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : '',
-  database : 'address_book'
+  password : 'root',
+  database : 'prestashop'
 });
 var app = express();
 
@@ -17,12 +17,15 @@ if(!err) {
 });
 
 app.get("/",function(req,res){
-connection.query('SELECT * from user LIMIT 2', function(err, rows, fields) {
+connection.query('SELECT * from has_played', function(err, rows, fields) {
 connection.end();
-  if (!err)
+  if (!err){
     console.log('The solution is: ', rows);
-  else
+    res.send('The solution is OK.');
+  } else {
     console.log('Error while performing Query.');
+    res.send('Error while performing Query.');
+  }
   });
 });
 

@@ -14,8 +14,9 @@ sudo openvpn --config vpnlab4.conf
 ```
 
 A partir de là, on peut :
-* voir les instances openstack : https://10.11.50.26/project/instances/
+* voir les instances openstack : http://10.11.50.26/project/instances/
 * se connecter aux instance par ssh : `ssh -i keys/cle_bastion ubuntu@<ip>`
+* pour se connecter, utiliser les identifiants reçus et spécifier le groupe default
 
 ## Installer openstackClient sur les bastions
 

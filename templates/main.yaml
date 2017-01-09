@@ -81,7 +81,7 @@ resources:
     properties:
       count: { get_param: appliWeb_instances_count }
       resource_def:
-        type: instance_with_volume.yaml
+        type: instance_with_small_volume.yaml
         properties:
           service_name: "appliWeb"
           instance_index: "%index%"
