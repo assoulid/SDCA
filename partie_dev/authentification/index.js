@@ -23,7 +23,7 @@ var serveur = http.createServer(function(req,res){
 	console.log(requete); 
 	console.log(parseInt(requete,10));
 	if (!isNaN(parseInt(requete,10)) ){
-		connection.query('SELECT * from has_played WHERE id_profile=' + requete, function(err, rows, fields) {
+		connection.query('SELECT * from has_played WHERE id_customer=' + requete, function(err, rows, fields) {
 			connection.end();
 			if (!err){
 				console.log('The solution is: ', rows);
