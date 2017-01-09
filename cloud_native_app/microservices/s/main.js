@@ -5,7 +5,7 @@ YAML = require('yamljs');
 
 // Loading configuration of database
 console.log("Loading configuration of database ...");
-config = YAML.load('../config/config.yml');
+config = YAML.load('./config.yml');
 
 /********** DATABASE **********/
 var mysql      = require('mysql');
