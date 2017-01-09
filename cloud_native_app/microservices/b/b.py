@@ -13,6 +13,7 @@ from logging.handlers import RotatingFileHandler
 
 import config
 import requests
+import swiftclient
 from flask import Flask
 from flask import jsonify
 from mysql import connector
@@ -54,8 +55,7 @@ def api_play(id):
 
         update_user_status(id, player_won)
 
-    except Exception as e:
-        print(e)
+    except:
         resp = get_response(False, None)
         return resp
 
@@ -88,43 +88,15 @@ def update_user_status(id, player_won):
 
 
 def send_result_to_swift(id, result):
-    swift_endpoint, token = get_keystone_token()
-    requests.put(swift_endpoint + "/{}/{}".format(SWIFT_CONTAINER, id)
-                 , data=result
-                 , headers={'Content-Type': 'application/json',
-                            'X-Auth-Token': token})
+    swift_connexion = swiftclient.client.Connection(
+        authurl=KEYSTONE_URL,
+        user="groupe4",
+        key=os.environ['OS_PASSWORD']
+    )
 
+    swift_connexion.put_object(SWIFT_CONTAINER, id, result)
 
-def get_keystone_token():
-    keystone_request_body = \
-        {
-            'auth': {
-                'identity': {
-                    'methods': ['password'],
-                    'password': {
-                        'user': {
-                            'name': 'groupe4',
-                            'domain': {
-                                'name': 'Default'
-                            },
-                            'password': os.environ['OS_PASSWORD']
-                        }
-                    }
-                }
-            }
-        }
-
-    keystone_response = requests.post(KEYSTONE_URL, headers={'content-type': 'application/json'},
-                                      data=json.dumps(keystone_request_body))
-
-    token = keystone_response.headers['X-Subject-Token']
-
-    swift_endpoint = list(filter(lambda x: x["interface"] == "public",
-                                 list(filter(lambda c: c['name'] == 'swift',
-                                             keystone_response.json()['token']['catalog']))[0][
-                                     'endpoints']))[0]['url']
-
-    return swift_endpoint, token
+    swift_connexion.close()
 
 
 def get_service_instance(service_name):

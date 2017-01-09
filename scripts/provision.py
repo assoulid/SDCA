@@ -15,8 +15,17 @@ MYSQL_INSTANCES_COUNT = 1
 APPLIWEB_INSTANCES_COUNT = 1
 
 subprocess.call(
-    "openstack stack create -t {} {} --parameter b_instances_count={} --parameter w_instances_count={} --parameter mysql_instances_count={} --parameter consul_server_instances_count={} --parameter appliWeb_instances_count={}".format(
-        HOT_PATH, STACK_NAME, B_INSTANCES_COUNT, W_INSTANCES_COUNT, MYSQL_INSTANCES_COUNT, CONSUL_INSTANCES_COUNT,
+    "openstack stack create -t {} {} "
+    "--parameter b_instances_count={} "
+    "--parameter w_instances_count={} "
+    "--parameter mysql_instances_count={} "
+    "--parameter consul_server_instances_count={} "
+    "--parameter appliWeb_instances_count={}".format(
+        HOT_PATH, STACK_NAME,
+        B_INSTANCES_COUNT,
+        W_INSTANCES_COUNT,
+        MYSQL_INSTANCES_COUNT,
+        CONSUL_INSTANCES_COUNT,
         APPLIWEB_INSTANCES_COUNT),
     shell=True)
 
@@ -38,17 +47,20 @@ while stack_status["stack_status"] != "CREATE_COMPLETE":
         exit(-1)
 
 
-# Create and associate a floating ip address to appliWeb_0
-# TODO : Create and associate an ip to ALL appliWeb instances
+# Create and associate a floating ip address to appliWeb instances
+
 def create_floating_ip():
-    json_stack_state = json.loads(
+    floating_ip_state = json.loads(
         subprocess.check_output("openstack floating ip create external-network -f json", shell=True).decode())
-    return json_stack_state
+    return floating_ip_state
 
 
-float_ip = create_floating_ip()
-subprocess.check_output("openstack server add floating ip appliWeb_0 {}".format(float_ip["floating_ip_address"]),
-                        shell=True)
+for app_instance_index in range(1, APPLIWEB_INSTANCES_COUNT):
+    current_floating_ip = create_floating_ip()
+    subprocess.check_output(
+        "openstack server add floating ip appliWeb_{} {}".format(current_floating_ip["floating_ip_address"],
+                                                                 app_instance_index),
+        shell=True)
 
 print("Stack creation successful.")
 
