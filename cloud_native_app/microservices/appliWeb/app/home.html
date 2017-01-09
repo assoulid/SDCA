@@ -1,7 +1,28 @@
 <h1>Projet HP : Cloud avancé</h1>
 
 
-
+<!--
 <micro-service-I class="microService">Loading micro-service Identification...</micro-service-I>
 <micro-service-B class="microService">Loading micro-service Button...</micro-service-B>
 <micro-service-P class="microService">Loading micro-service Picture...</micro-service-P>
+-->
+
+
+
+<h3>Micro Service I(dentification)</h3>
+<div *ngIf="errorI" class="errorMsg">
+    {{errorMsg}}
+</div>
+<div *ngIf="!errorI">
+    <div>Identifiant : {{id}}</div>
+    <div>Nom : {{name}}</div>
+</div>
+<button (click)="identification()">Reload I</button>
+
+
+<h3>Micro Service B(utton)</h3>
+<button (click)="play()" [disabled]="played">Jouer</button>
+<div [hidden]="!played">Vous avez déjà joué</div>
+
+
+<h3>Micro Service P(icture)</h3>
