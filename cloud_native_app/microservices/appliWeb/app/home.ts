@@ -6,7 +6,7 @@ import {MicroServiceS} from "./microServiceS";
 
 @Component({
    selector: 'home',
-   templateUrl : 'app/home.html',
+   templateUrl : 'app/home.html', 
    styleUrls:["app/css/home.scss"],
    providers: [MicroServiceB,MicroServiceI, MicroServiceP,MicroServiceS]
 })
@@ -41,7 +41,8 @@ export class Home {
 	play(){
 		this.microServiceB.play(this.id).subscribe(
 			data=>{
-                console.log("OK");
+				console.log("Resultat final du PLAY")
+                console.log(data);
 			},
 			error=>{
 				console.log("Le service B ne répond pas...");
