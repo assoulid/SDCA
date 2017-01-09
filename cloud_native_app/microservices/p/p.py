@@ -18,7 +18,7 @@ def swift_get(id):
 
         # decodage de l'image
         
-        img = object_body.encode("ascii");
+        img = object_body["img"].encode("ascii");
         img = base64.b64decode(img);
 
         resp = jsonify(object_body)
@@ -31,4 +31,3 @@ def swift_get(id):
 
     except swiftclient.exceptions.ClientException:
         print(traceback.format_exc())
-    
