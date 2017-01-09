@@ -38,16 +38,13 @@ app.get('/', function (req, res) {
   res.send('Service Status');
 });
 
-var listPers = ["Antoine","Bob","Alice","Robert","Oscar","Felix","Claire"];
-
 app.get('/status/:id', function (req, res) {
-  var result = {"id":"","name":"", "aJoue":""};
+  var result = {"id":"", "aJoue":""};
   var id = req.params.id;
   console.log("requete GET : status/"+id)
 
-  if (id < 8 && id > -1) {
+  if (id < 20002 && id > 0) {
     result.id = id;
-    result.name = listPers[id];
     connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
       // Closing connection
       // connection.end();
