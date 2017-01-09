@@ -8,7 +8,8 @@ parameters:
     label: Consul server instances count
     default: 1
     description: Number of consul server instances to deploy
-    modulo: { step: 2, offset: 1 }
+    constraints:
+      modulo: { step: 2, offset: 1 }
 
   b_instances_count:
     type: number
@@ -21,6 +22,12 @@ parameters:
     label: W instances count
     default: 1
     description: Number of w instances to deploy
+
+  p_instances_count:
+    type: number
+    label: P instances count
+    default: 1
+    description: Number of p instances to deploy
 
   mysql_instances_count:
     type: number
@@ -66,6 +73,16 @@ resources:
           service_name: "b"
           instance_index: "%index%"
 
+  p_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: p_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "p"
+          instance_index: "%index%"
+
   mysql_servers:
     type: OS::Heat::ResourceGroup
     properties:
@@ -94,6 +111,10 @@ outputs:
   w:
     description: IP addresses of w
     value: { get_attr: [ w_servers, ip_addresses ] }
+
+  p:
+    description: IP addresses of p
+    value: { get_attr: [ p_servers, ip_addresses ] }
 
   consul_server:
     description: IP addresses of consul_servers
