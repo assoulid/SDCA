@@ -8,6 +8,7 @@ parameters:
     label: Consul server instances count
     default: 1
     description: Number of consul server instances to deploy
+    modulo: { step: 2, offset: 1 }
 
   b_instances_count:
     type: number
