@@ -11,6 +11,7 @@ HOT_PATH = os.path.abspath("../templates/main.yaml")
 CONSUL_INSTANCES_COUNT = 1
 B_INSTANCES_COUNT = 1
 W_INSTANCES_COUNT = 1
+P_INSTANCES_COUNT = 1
 MYSQL_INSTANCES_COUNT = 1
 APPLIWEB_INSTANCES_COUNT = 1
 
@@ -18,12 +19,15 @@ subprocess.call(
     "openstack stack create -t {} {} "
     "--parameter b_instances_count={} "
     "--parameter w_instances_count={} "
+    "--parameter p_instances_count={} "
     "--parameter mysql_instances_count={} "
     "--parameter consul_server_instances_count={} "
-    "--parameter appliWeb_instances_count={}".format(
+    "--parameter appliWeb_instances_count={}"
+        .format(
         HOT_PATH, STACK_NAME,
         B_INSTANCES_COUNT,
         W_INSTANCES_COUNT,
+        P_INSTANCES_COUNT,
         MYSQL_INSTANCES_COUNT,
         CONSUL_INSTANCES_COUNT,
         APPLIWEB_INSTANCES_COUNT),
@@ -55,11 +59,11 @@ def create_floating_ip():
     return floating_ip_state
 
 
-for app_instance_index in range(1, APPLIWEB_INSTANCES_COUNT):
+for app_instance_index in range(0, APPLIWEB_INSTANCES_COUNT):
     current_floating_ip = create_floating_ip()
     subprocess.check_output(
-        "openstack server add floating ip appliWeb_{} {}".format(current_floating_ip["floating_ip_address"],
-                                                                 app_instance_index),
+        "openstack server add floating ip appliWeb_{} {}".format(app_instance_index,
+                                                                 current_floating_ip["floating_ip_address"]),
         shell=True)
 
 print("Stack creation successful.")
@@ -69,6 +73,8 @@ b_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "b", stack_status["outputs"])))[0]
 w_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "w", stack_status["outputs"])))[0]
+p_instances_ips = list(
+    map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "p", stack_status["outputs"])))[0]
 consul_server_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "consul_server", stack_status["outputs"])))[0]
 mysql_instances_ips = list(
@@ -85,6 +91,10 @@ with open("/etc/ansible/hosts", "w") as hosts:
     for w in w_instances_ips:
         hosts.write(w + "\n")
 
+    hosts.write("[p]\n")
+    for p in p_instances_ips:
+        hosts.write(p + "\n")
+
     hosts.write("[consul_server]\n")
     for cs in consul_server_instances_ips:
         hosts.write(cs + "\n")
@@ -98,11 +108,11 @@ with open("/etc/ansible/hosts", "w") as hosts:
         hosts.write(aw + "\n")
 
     hosts.write("[all_nodes]\n")
-    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips:
+    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips:
         hosts.write(instance + "\n")
 
 with open(os.path.expanduser("~/scan_hosts"), "w") as sh:
-    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips:
+    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips:
         sh.write("ssh-keyscan -t rsa {} >> ~/.ssh/known_hosts\n".format(instance))
 
 os.chmod(os.path.expanduser("~/scan_hosts"), 0o777)
