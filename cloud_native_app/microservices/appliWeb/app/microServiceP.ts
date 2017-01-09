@@ -1,13 +1,12 @@
-import {Component} from "@angular/core";
-
-@Component({
-   selector: 'micro-service-P',
-   templateUrl : 'app/microServiceP.html',
-   styleUrls : ['app/css/microService.css']
-})
+import {Injectable} from "@angular/core";
+import {Http,Headers} from '@angular/http';
 
 
+
+@Injectable()
 export class MicroServiceP {
 
+
+    constructor(private http: Http){}
 
 }
