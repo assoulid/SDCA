@@ -9,7 +9,7 @@ parameters:
     default: 1
     description: Number of consul server instances to deploy
     constraints:
-      modulo: { step: 2, offset: 1 }
+      - modulo: { step: 2, offset: 1 }
 
   b_instances_count:
     type: number
