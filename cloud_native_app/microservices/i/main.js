@@ -2,6 +2,13 @@ var http        = require("http");
 var mysql       = require('mysql');
 var url         = require('url');
 var qs          = require('querystring');
+var request     = require('request');
+var ip          ='';
+
+/*request("http://localhost:8500/v1/catalog/sarvice/mysql", function( error, response, body){
+  ip = response[1]["Address"];
+});*/
+
 var connection  = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -24,7 +31,6 @@ var serveur = http.createServer(function(req,res){
     req.on('data', function(data){ body += data; });
     req.on('end', function(){ 
       var parsedbody = qs.parse(body); 
-      //console.log(parsedbody); 
       var reqSQL = "SELECT * from ps_customer WHERE email='" + parsedbody['login'] + "' AND passwd='" + parsedbody['password'] +"'";
       console.log(reqSQL);
       connection.query(reqSQL, function(err, rows, fields) {
