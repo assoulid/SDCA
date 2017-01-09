@@ -48,7 +48,7 @@ app.get('/status/:id', function (req, res) {
   if (id < 8 && id > -1) {
     result.id = id;
     result.name = listPers[id];
-    connection.query('SELECT has_played FROM has_played WHERE id_profile='+id, function(err, rows, fields) {
+    connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
       // Closing connection
       // connection.end();
       if (!err) {
