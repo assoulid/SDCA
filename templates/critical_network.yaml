@@ -1,0 +1,27 @@
+heat_template_version: 2015-04-30
+
+description: Template for network for critical components
+
+resources:
+  critical_network:
+    type: OS::Neutron::Net
+    properties:
+      admin_state_up: True
+      name: critical_network
+      shared: False
+
+  critical_network_subnet:
+    depends_on: critical_network
+    type: OS::Neutron::Subnet
+    properties:
+      cidr: "10.0.2.0/24"
+      enable_dhcp: True
+      ip_version: 4
+      name: critical_network_subnet
+      network: { get_resource: critical_network }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: "routerGroupe4"
+      subnet: { get_resource: critical_network_subnet }

@@ -9,29 +9,35 @@ parameters:
     default: 1
     description: Number of consul server instances to deploy
 
-  b_instances_count:
-    type: number
-    label: B instances count
-    default: 1
-    description: Number of b instances to deploy
-
   w_instances_count:
     type: number
     label: W instances count
     default: 1
     description: Number of w instances to deploy
 
-  p_instances_count:
-    type: number
-    label: P instances count
-    default: 1
-    description: Number of p instances to deploy
-
   s_instances_count:
     type: number
     label: S instances count
     default: 1
     description: Number of s instances to deploy
+
+  s_mysql_instances_count:
+    type: number
+    label: Mysql instances count for s service
+    default: 1
+    description: Number of mysql instances to deploy
+
+  b_instances_count:
+    type: number
+    label: B instances count
+    default: 1
+    description: Number of b instances to deploy
+
+  p_instances_count:
+    type: number
+    label: P instances count
+    default: 1
+    description: Number of p instances to deploy
 
   i_instances_count:
     type: number
@@ -53,6 +59,13 @@ parameters:
 
 resources:
 
+  critical_components:
+    type: critical.yaml
+    properties:
+      w_instances_count: { get_param: w_instances_count }
+      s_instances_count: { get_param: s_instances_count }
+      s_mysql_instances_count: { get_param: s_mysql_instances_count }
+
   consul_servers:
     type: OS::Heat::ResourceGroup
     properties:
@@ -61,16 +74,6 @@ resources:
         type: instance_with_volume.yaml
         properties:
           service_name: "consul_server"
-          instance_index: "%index%"
-
-  w_servers:
-    type: OS::Heat::ResourceGroup
-    properties:
-      count: { get_param: w_instances_count }
-      resource_def:
-        type: instance_with_volume.yaml
-        properties:
-          service_name: "w"
           instance_index: "%index%"
 
   b_servers:
@@ -91,16 +94,6 @@ resources:
         type: instance_with_volume.yaml
         properties:
           service_name: "p"
-          instance_index: "%index%"
-
-  s_servers:
-    type: OS::Heat::ResourceGroup
-    properties:
-      count: { get_param: s_instances_count }
-      resource_def:
-        type: instance_with_volume.yaml
-        properties:
-          service_name: "s"
           instance_index: "%index%"
 
   i_servers:
@@ -141,15 +134,15 @@ outputs:
 
   w:
     description: IP addresses of w
-    value: { get_attr: [ w_servers, ip_addresses ] }
+    value: { get_attr: [ critical_components, w_adresses ] }
 
   p:
     description: IP addresses of p
     value: { get_attr: [ p_servers, ip_addresses ] }
 
   s:
-    description: IP addresses of q
-    value: { get_attr: [ s_servers, ip_addresses ] }
+    description: IP addresses of s
+    value: { get_attr: [ critical_components, s_adresses ] }
 
   i:
     description: IP addresses of i
@@ -162,6 +155,10 @@ outputs:
   mysql:
     description: IP addresses of mysql instances
     value: { get_attr: [ mysql_servers, ip_addresses ] }
+
+  s_mysql:
+    description: IP addresses of mysql instances
+    value: { get_attr: [ critical_components, s_mysql_adresses ] }
 
   appliWeb:
     description: IP addresses of appliWeb instances

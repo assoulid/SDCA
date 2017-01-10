@@ -1,0 +1,78 @@
+heat_template_version: 2015-04-30
+
+description: Template for microservices
+
+parameters:
+
+  w_instances_count:
+    type: number
+    label: W instances count
+    default: 1
+    description: Number of w instances to deploy
+
+  s_instances_count:
+    type: number
+    label: S instances count
+    default: 1
+    description: Number of s instances to deploy
+
+  s_mysql_instances_count:
+    type: number
+    label: Mysql instances count for s service
+    default: 1
+    description: Number of mysql instances to deploy
+
+resources:
+
+  critical_net:
+    type: critical_network.yaml
+
+  w_servers:
+    type: OS::Heat::ResourceGroup
+    depends_on: critical_net
+    properties:
+      count: { get_param: w_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "w"
+          instance_index: "%index%"
+          network: critical_network
+
+  s_servers:
+    type: OS::Heat::ResourceGroup
+    depends_on: critical_net
+    properties:
+      count: { get_param: s_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "s"
+          instance_index: "%index%"
+          network: critical_network
+
+  s_mysql_servers:
+    type: OS::Heat::ResourceGroup
+    depends_on: critical_net
+    properties:
+      count: { get_param: s_mysql_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "s_mysql"
+          instance_index: "%index%"
+          network: critical_network
+
+outputs:
+  w_adresses:
+    description: IP addresses of w
+    value: { get_attr: [ w_servers, ip_addresses ] }
+
+  s_adresses:
+    description: IP addresses of s
+    value: { get_attr: [ s_servers, ip_addresses ] }
+
+
+  s_mysql_adresses:
+    description: IP addresses of s mysql instances
+    value: { get_attr: [ s_mysql_servers, ip_addresses ] }

@@ -12,6 +12,11 @@ parameters:
     type: string
     description: Index of instance
 
+  network:
+    type: string
+    description: Instance network
+    default: "ReseauGroupe4"
+
   flavor:
     type: string
     description: Flavor of instance
@@ -37,7 +42,7 @@ resources:
       flavor: { get_param: flavor }
       block_device_mapping: [{"delete_on_termination": false,"device_name": /dev/vda,"volume_id": { get_resource: instance_volume },"volume_size": 10}]
       networks:
-        - network: ReseauGroupe4
+        - network: { get_param: network }
 
 outputs:
   ip_addresses:
