@@ -27,6 +27,12 @@ parameters:
     default: 1
     description: Number of p instances to deploy
 
+  s_instances_count:
+    type: number
+    label: S instances count
+    default: 1
+    description: Number of s instances to deploy
+
   i_instances_count:
     type: number
     label: I instances count
@@ -87,6 +93,16 @@ resources:
           service_name: "p"
           instance_index: "%index%"
 
+  s_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: s_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "s"
+          instance_index: "%index%"
+
   i_servers:
     type: OS::Heat::ResourceGroup
     properties:
@@ -130,6 +146,10 @@ outputs:
   p:
     description: IP addresses of p
     value: { get_attr: [ p_servers, ip_addresses ] }
+
+  s:
+    description: IP addresses of q
+    value: { get_attr: [ s_servers, ip_addresses ] }
 
   i:
     description: IP addresses of i

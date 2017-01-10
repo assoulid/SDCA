@@ -22,6 +22,9 @@ ansible-playbook ../playbooks/b.yaml --ssh-common-args='-o IdentityFile=~/.ssh/c
 #Run p playbook
 ansible-playbook ../playbooks/p.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > p.out &
 
+#Run s playbook
+ansible-playbook ../playbooks/s.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > s.out &
+
 #Run mysql playbook
 ansible-playbook ../playbooks/mysql.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > mysql.out &
 
