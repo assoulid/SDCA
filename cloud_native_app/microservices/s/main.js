@@ -54,21 +54,19 @@ app.get('/status/:id', function (req, res) {
       });
 
       // Executing query
-      if (id < 20002 && id > 0) {
-        result.id = id;
-        connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
-          // Closing connection
-          // connection.end();
-          if (!err) {
-            // console.log(rows[0].has_played);
-            aJoue = rows[0].has_played;
-            result.aJoue = !!+aJoue; // Converts int to boolean
-            res.send(JSON.stringify(result));
-          }
-          else
-            console.log('Error while performing Query.');
-        });
-      }
+      result.id = id;
+      connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
+        // Closing connection
+        // connection.end();
+        if (!err) {
+          // console.log(rows[0].has_played);
+          aJoue = rows[0].has_played;
+          result.aJoue = !!+aJoue; // Converts int to boolean
+          res.send(JSON.stringify(result));
+        }
+        else
+          console.log('Error while performing Query.');
+      });
     }
   });
 });
