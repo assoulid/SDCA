@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Http,Headers} from '@angular/http';
-import {Config} from "./config";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 
@@ -8,13 +7,14 @@ import 'rxjs/add/operator/timeout';
 @Injectable()
 export class MicroServiceS {
 
+    host:string = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
 
     constructor(private http: Http){ }
 
 
 	getStatus(id:string){
-		let method = '/status'+'/'+id;
-		let urlws : string= Config.addrServiceS + method ;
+		let method = '/status/'+id;
+		let urlws : string= this.host + method ;
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 

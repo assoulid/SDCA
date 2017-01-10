@@ -7,7 +7,7 @@ import {MicroServiceS} from "./microServiceS";
 @Component({
    selector: 'home',
    templateUrl : 'app/home.html', 
-   styleUrls:["app/css/home.scss"],
+   styleUrls:["app/css/home.css"],
    providers: [MicroServiceB,MicroServiceI, MicroServiceP,MicroServiceS]
 })
 

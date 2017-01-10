@@ -1,11 +1,12 @@
 {
-  "name": "angular2-http-demo",
+  "name": "AppliWeb_SDCA",
   "version": "0.1.0",
   "scripts": {
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lite": "lite-server",
-    "start": "concurrent \"npm run tsc:w\" \"npm run lite\" "
+    "build":"tsc --rootDir app --target ES5 --module system --moduleResolution node --sourceMap true --emitDecoratorMetadata true --experimentalDecorators true --removeComments false --outDir bin",
+    "start":"npm run build && node index.js"
   },
   "license": "ISC",
   "dependencies": {
@@ -20,10 +21,12 @@
     "@angular/upgrade": "~2.0.1",
     "angular-in-memory-web-api": "~0.1.1",
     "bootstrap": "^3.3.7",
-    "systemjs": "0.19.39",
     "core-js": "^2.4.1",
+    "express": "^4.14.0",
+    "path": "^0.12.7",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
+    "systemjs": "0.19.39",
     "zone.js": "^0.6.25"
   },
   "devDependencies": {
