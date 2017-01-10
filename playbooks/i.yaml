@@ -34,7 +34,7 @@
 
     - name: Run i docker container
       shell:
-        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8500:8500 -p 3000:3000 i:i
+        cmd: docker run --network="host" -d -p 8500:8500 -p 3000:3000 i:i
       become: true
 
     - name: Register i service
