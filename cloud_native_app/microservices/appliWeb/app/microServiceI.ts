@@ -16,8 +16,8 @@ export class MicroServiceI {
         }
     }
 
-	identification(id:string){
-		let method = '/login/'+id;
+	identification(name:string, password:string){
+		let method = '/login/'+name+'/'+password;
 		let  urlws : string= this.host + method ;
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');

@@ -51,7 +51,7 @@ export class Home {
 	}
 
     identification(){
-		this.microServiceI.identification(this.id.toString()).subscribe(
+		this.microServiceI.identification(this.name, this.password).subscribe(
 			data=>{
 				console.log("donnée de l'auth :" +JSON.stringify(data))
 				this.errorI = !data.estPresent;
