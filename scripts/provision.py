@@ -78,7 +78,7 @@ w_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "w", stack_status["outputs"])))[0]
 p_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "p", stack_status["outputs"])))[0]
-p_instances_ips = list(
+i_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "i", stack_status["outputs"])))[0]
 consul_server_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "consul_server", stack_status["outputs"])))[0]
