@@ -46,6 +46,7 @@ app.get('/login/:name/:password', function(req, res) {
     console.log('login : '+req.params.name+ ' '+ req.params.password);
     var name = req.params.name
     var password = req.params.password
+    console.log("requete DNS : "+DNSAddr + "i")
     request(DNSAddr + "i", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body); // Show the HTML for the Modulus homepage.
@@ -53,6 +54,7 @@ app.get('/login/:name/:password', function(req, res) {
                 var addrI = body[0]["Address"]
                 var portI = body[0]["ServicePort"]
                 var url = 'http://'+addrI+":"+portI;
+                console.log("requete I : "+url)
                 request( {
                         url: url, 
                         method: 'POST',
