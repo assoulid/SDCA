@@ -24,7 +24,7 @@ app.get('/status/:id', function (req, res) {
   console.log("requete GET : status/"+id)
 
   // Loading database IP and port
-  request("http://localhost:8500/v1/catalog/service/mysql", function (error, response, body) {
+  request("http://localhost:8500/v1/catalog/service/s_mysql", function (error, response, body) {
 
     console.log(body);
 
