@@ -11,6 +11,7 @@ COPY bs-config.json package.json systemjs.config.js tsconfig.json /home/appliWeb
 RUN chown -R appliWeb:appliWeb /home/appliWeb/
 RUN chmod -R 700 /home/appliWeb/
 EXPOSE 3000
+EXPOSE 8500
 USER appliWeb
 WORKDIR /home/appliWeb
 RUN npm install
