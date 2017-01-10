@@ -57,9 +57,11 @@ app.get('/play/:id', function(req, res) {
                 headers: {'Content-Type': 'application/json'}
             };
         }            
-        httpRequest(options, function(status,obj){res.send(obj)}, function(error){console.log("error1")})
+        httpRequest(options, function(status,obj){res.send(obj)}, function(error){console.log(JSON.stringify(error))})
     }
-    httpRequest(getOptionsDNS('b'), treatement, function(error){console.log("error2")})
+    var optionsDns = getOptionsDNS('b');
+    console.log("http : "+JSON.stringify(optionsDns))
+    httpRequest(getOptionsDNS('b'), treatement, function(error){console.log(JSON.stringify(error))})
 });
 
 app.use(express.static(__dirname));
