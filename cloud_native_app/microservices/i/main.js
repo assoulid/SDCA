@@ -55,7 +55,4 @@ var serveur = http.createServer(function(req,res){
   }
 });
 
-
-
-
 serveur.listen(3000);
