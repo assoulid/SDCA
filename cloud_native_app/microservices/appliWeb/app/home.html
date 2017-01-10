@@ -7,7 +7,7 @@
 <micro-service-P class="microService">Loading micro-service Picture...</micro-service-P>
 -->
 
-
+<label>ID</label><input [(ngModel)]='id'>
 
 <h3>Micro Service I(dentification)</h3>
 
@@ -33,7 +33,7 @@
 <h3>Micro Service B(utton)</h3>
 <button (click)="play()" [disabled]="played||id==-1">Jouer</button>
 <div [hidden]="!played">Vous avez déjà joué</div>
-<div [hidden]="id==-1">Connectez vous pour jouer</div>
+<div [hidden]="id!=-1">Connectez vous pour jouer</div>
 
 <h3>Micro Service P(icture)</h3>
 
