@@ -8,14 +8,11 @@ import logging
 import os
 import pprint
 import sys
-import traceback
 from logging.handlers import RotatingFileHandler
 
 import config
-import swiftclient
 import requests
 from flask import Flask
-from flask import Response
 from flask import jsonify
 
 # Initialise Flask
@@ -27,7 +24,6 @@ app.debug = True
 # Affect app logger to a global variable so logger can be used elsewhere.
 config.logger = app.logger
 
-# TODO : retirer le mot de passe en clair
 KEYSTONE_URL = "http://10.11.50.26:5000/v3/auth/tokens"
 SWIFT_CONTAINER = "prizes_container"
 

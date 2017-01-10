@@ -117,10 +117,10 @@ def update_user_status(id, player_won):
                                          user='root', password='group4',
                                          database='prestashop')
 
-    user_status_query = "INSERT INTO has_played VALUES (%s, %s,%s)"
+    user_status_query = "UPDATE has_played set has_played = %s , has_won = %s where id_customer = %s"
 
     cursor = mysql_connection.cursor()
-    cursor.execute(user_status_query, (id, True, player_won))
+    cursor.execute(user_status_query, (True, player_won, id))
     mysql_connection.commit()
 
     mysql_connection.close()
