@@ -19,9 +19,10 @@ app.get('/play/:id', function(req, res) {
     request(DNSAddr + "b", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body); // Show the HTML for the Modulus homepage.
+            var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
-                var addrB = body[0]["Address"]
-                var portB = body[0]["ServicePort"]
+                var addrB = bodyParsed[0]["Address"]
+                var portB = bodyParsed[0]["ServicePort"]
                 var url = 'http://'+addrB+":"+portB+'/play/'+id;
                 console.log("Acces à "+url)
                 request(url, function (error, response, body) {
@@ -50,9 +51,10 @@ app.get('/login/:name/:password', function(req, res) {
     request(DNSAddr + "i", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body); // Show the HTML for the Modulus homepage.
+            var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
-                var addrI = body[0]["Address"]
-                var portI = body[0]["ServicePort"]
+                var addrI = bodyParsed[0]["Address"]
+                var portI = bodyParsed[0]["ServicePort"]
                 var url = 'http://'+addrI+":"+portI;
                 console.log("requete I : "+url)
                 request( {
@@ -90,9 +92,10 @@ app.get('/status/:id', function(req, res) {
     request(DNSAddr + "s", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body); // Show the HTML for the Modulus homepage.
+            var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
-                var addrS = body[0]["Address"]
-                var portS = body[0]["ServicePort"]
+                var addrS = bodyParsed[0]["Address"]
+                var portS = bodyParsed[0]["ServicePort"]
                 request('http://'+addrS+":"+portS+'/status/'+id, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         console.log(body); // Show the HTML for the Modulus homepage.
@@ -118,9 +121,10 @@ app.get('/picture/:id', function(req, res) {
     request(DNSAddr + "p", function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body); // Show the HTML for the Modulus homepage.
+            var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
-                var addrP = body[0]["Address"]
-                var portP = body[0]["ServicePort"]
+                var addrP = bodyParsed[0]["Address"]
+                var portP = bodyParsed[0]["ServicePort"]
                 request('http://'+addrP+":"+portP+'/'+id, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         console.log(body); // Show the HTML for the Modulus homepage.
@@ -141,5 +145,5 @@ app.get('/picture/:id', function(req, res) {
 
 app.use(express.static(__dirname));
 
-console.log('Server up and running on http://localhost:3000/');
+console.log('Server up and running on port 3000');
 app.listen(3000);
