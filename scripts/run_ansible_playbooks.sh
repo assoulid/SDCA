@@ -12,7 +12,7 @@ ansible-playbook ../playbooks/all_nodes.yaml --ssh-common-args='-o IdentityFile=
 echo 'Running consul_server.yaml playbook. See consul_server.out for command output'
 ansible-playbook ../playbooks/consul_server.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > consul_server.out
 
-echo 'Running w.yaml and b.yaml and mysql.yaml and appliWeb.yaml playbooks in parallel. See {w,b,mysql,appliWeb}.out for commands output'
+echo 'Running w.yaml and b.yaml and mysql.yaml and appliWeb.yaml and i.yaml playbooks in parallel. See {w,b,mysql,appliWeb,i}.out for commands output'
 #Run w playbook
 ansible-playbook ../playbooks/w.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > w.out &
 
@@ -22,8 +22,14 @@ ansible-playbook ../playbooks/b.yaml --ssh-common-args='-o IdentityFile=~/.ssh/c
 #Run p playbook
 ansible-playbook ../playbooks/p.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > p.out &
 
+#Run s playbook
+ansible-playbook ../playbooks/s.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > s.out &
+
 #Run mysql playbook
 ansible-playbook ../playbooks/mysql.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > mysql.out &
 
 #Run appliWeb playbook
 ansible-playbook ../playbooks/appliWeb.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > appliWeb.out &
+
+#Run i playbook
+ansible-playbook ../playbooks/i.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > i.out &

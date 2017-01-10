@@ -27,6 +27,18 @@ parameters:
     default: 1
     description: Number of p instances to deploy
 
+  s_instances_count:
+    type: number
+    label: S instances count
+    default: 1
+    description: Number of s instances to deploy
+
+  i_instances_count:
+    type: number
+    label: I instances count
+    default: 1
+    description: Number of i instances to deploy
+
   mysql_instances_count:
     type: number
     label: Mysql instances count
@@ -81,6 +93,26 @@ resources:
           service_name: "p"
           instance_index: "%index%"
 
+  s_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: s_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "s"
+          instance_index: "%index%"
+
+  i_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: { get_param: i_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "i"
+          instance_index: "%index%"
+
   mysql_servers:
     type: OS::Heat::ResourceGroup
     properties:
@@ -96,10 +128,11 @@ resources:
     properties:
       count: { get_param: appliWeb_instances_count }
       resource_def:
-        type: instance_with_small_volume.yaml
+        type: instance_with_volume.yaml
         properties:
           service_name: "appliWeb"
           instance_index: "%index%"
+          flavor: "m1.small"
 
 outputs:
   b:
@@ -113,6 +146,14 @@ outputs:
   p:
     description: IP addresses of p
     value: { get_attr: [ p_servers, ip_addresses ] }
+
+  s:
+    description: IP addresses of q
+    value: { get_attr: [ s_servers, ip_addresses ] }
+
+  i:
+    description: IP addresses of i
+    value: { get_attr: [ i_servers, ip_addresses ] }
 
   consul_server:
     description: IP addresses of consul_servers
