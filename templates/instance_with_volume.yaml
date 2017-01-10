@@ -15,7 +15,7 @@ parameters:
   flavor:
     type: string
     description: Flavor of instance
-    default: m1.tiny
+    default: m1.small
 
 resources:
 
