@@ -38,20 +38,26 @@ var serveur = http.createServer(function(req,res){
 		  if (!err){
 		    if (rows.length == 0){
 		      console.log('Pas de correspondance: ' + parsedbody['login'] + "/" + parsedbody['password']);
-			    res.end('Pas de correspondance.\n');
+					var err;
+					err['error'] = "Pas de correspondance.";
+					res.end(JSON.stringify(err));
 		    } else {
 			    console.log('The solution is: ', rows);
-			    res.end(JSON.stringify(rows));
+			    res.end(JSON.stringify(rows[0]));
 		    }
 		  } else {
 			  console.log('Error while performing Query.');
-			  res.end('Error while performing Query.\n');
+				var err;
+				err['error'] = "Error while performing Query.";
+				res.end(JSON.stringify(err));
 		  }
 	    });  
     });
 	  
   } else {
-    res.end('La requete doit être une requète POST\n');
+		var err;
+		err['error'] = "La requete doit être une requète POST";
+    res.end(JSON.stringify(err));
   }
 });
 

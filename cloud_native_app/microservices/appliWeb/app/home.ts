@@ -30,6 +30,7 @@ export class Home {
     errorMsgP = "";
     played : boolean = null;
 
+	gift:string= null;
 
     constructor(private microServiceB : MicroServiceB,
                 private microServiceI : MicroServiceI,
@@ -54,10 +55,11 @@ export class Home {
 		this.microServiceI.identification(this.name, this.password).subscribe(
 			data=>{
 				console.log("donnée de l'auth :" +JSON.stringify(data))
-				this.errorI = !data.estPresent;
-				if(data.estPresent){
-					this.name = data.name;
+				if(data && data.error==undefined){
+					console.log(JSON.stringify(data));
+					this.id = data["id_customer"];
 				}else{
+					this.errorI = true;
 					this.errorMsgI = "Identifiant incorrect"
 				}
 			},
