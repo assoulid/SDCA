@@ -5,9 +5,9 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lite": "lite-server",
-    "installTsc":"npm install -g typescript",
+    "preinstall": "npm install -g typescript",
     "build": "tsc --rootDir app --target ES5 --module system --sourceMap true --emitDecoratorMetadata true --experimentalDecorators true --removeComments false --outDir bin",
-    "start": "npm run installTsc && npm run build && node index.js"
+    "start": "npm run build && node index.js"
   },
   "license": "ISC",
   "dependencies": {
