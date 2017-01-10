@@ -1,6 +1,6 @@
 import {Component, Injectable} from "@angular/core";
 import {Http,Headers} from '@angular/http';
-import {Dns} from "./Dns";
+import {Dns} from "./dns";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 
