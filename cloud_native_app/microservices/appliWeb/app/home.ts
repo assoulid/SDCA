@@ -30,7 +30,7 @@ export class Home {
     errorMsgP = "";
     played : boolean = null;
 
-	gift:string= null;
+    gift:string= null;
 
     constructor(private microServiceB : MicroServiceB,
                 private microServiceI : MicroServiceI,
