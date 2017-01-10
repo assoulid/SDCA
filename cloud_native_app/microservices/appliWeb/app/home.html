@@ -38,5 +38,5 @@
 <h3>Micro Service P(icture)</h3>
 
 <div [hidden]='id!=-1'>Connectez vous pour voir votre cadeau</div>
-<div [hidden]='price!=null||id==-1'>Vous n'avez rien gagné</div>
-<img [hidden]='price==null&&id==-1' src='{{gift}}'>Prix gagné</img>
+<div [hidden]='(gift)||(id==-1)'>Vous n'avez rien gagné</div>
+<img [hidden]='(gift==null)||(id==-1)' src='{{gift}}'/>
