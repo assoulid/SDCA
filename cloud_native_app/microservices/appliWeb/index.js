@@ -145,5 +145,6 @@ app.get('/picture/:id', function(req, res) {
 
 app.use(express.static(__dirname));
 
-console.log('Server up and running on port 3000');
-app.listen(3000);
+var port = 80
+console.log('Server up and running on port '+port);
+app.listen(port);

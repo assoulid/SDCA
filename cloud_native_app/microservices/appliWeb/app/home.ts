@@ -57,7 +57,7 @@ export class Home {
 				console.log("donnée de l'auth :" +JSON.stringify(data))
 				if(data && data.error==undefined){
 					console.log(JSON.stringify(data));
-					this.id = data["id_customer"];
+					this.id = data[0]["id_customer"];
 				}else{
 					this.errorI = true;
 					this.errorMsgI = "Identifiant incorrect"

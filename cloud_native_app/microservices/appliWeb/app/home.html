@@ -12,16 +12,16 @@
 <h3>Micro Service I(dentification)</h3>
 
 <div *ngIf='id!=-1'>
-    <div *ngIf="errorI" class="errorMsg">
+    <div [hidden]="!errorI" class="errorMsg">
         {{errorMsg}}
     </div>
-    <div *ngIf="!errorI">
+    <div [hidden]="errorI">
         <div>Identifiant : {{id}}</div>
-        <div>Nom : {{name}}</div>
+        <div>Email : {{name}}</div>
     </div>
 </div>
 <div *ngIf='id==-1'>
-    <label>Nom</label>
+    <label>Email</label>
     <input [(ngModel)]='name'>
     <label>Mot de passe</label>
     <input type='password' [(ngModel)]='password'>
