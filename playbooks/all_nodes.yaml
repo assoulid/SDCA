@@ -62,6 +62,22 @@
         state: latest
       become: true
 
+    - name: Copy ssh identityFile
+      copy:
+        src: ../keys/cle_bastion
+        dest: /home/centos/.ssh
+        mode: 0600
+        owner: centos
+        group: centos
+
+    - name: Copy ssh config file
+      copy:
+        src: ../keys/config
+        dest: /home/centos/.ssh
+        mode: 0600
+        owner: centos
+        group: centos
+
   handlers:
     - name: Start docker
       shell:
