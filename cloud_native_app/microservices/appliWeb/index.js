@@ -48,6 +48,7 @@ app.get('/play/:id', function(req, res) {
     var treatement = function(status,obj){
         if(obj!=null && obj.length > 0){
             var id = req.params.id;
+            console.log(obj[0]["Address"]+':'+obj[0]["ServicePort"]+'/'+id)
             var options = {
                 host: obj[0]["Address"],
                 port: obj[0]["ServicePort"],
