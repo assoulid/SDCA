@@ -11,7 +11,7 @@
 
 <h3>Micro Service I(dentification)</h3>
 
-<div [hide]='id!=-1'>
+<div *ngIf='id!=-1'>
     <div *ngIf="errorI" class="errorMsg">
         {{errorMsg}}
     </div>
@@ -20,18 +20,23 @@
         <div>Nom : {{name}}</div>
     </div>
 </div>
-<div [hide]='id==-1'>
+<div *ngIf='id==-1'>
+    <label>Nom</label>
     <input [(ngModel)]='name'>
-    <input type='password'[(ngModel)]='password'>
+    <label>Mot de passe</label>
+    <input type='password' [(ngModel)]='password'>
     <button (click)='identification()'>S'identifier</button>
 </div>
 
-<button (click)="identification()">Reload I</button>
 
 
 <h3>Micro Service B(utton)</h3>
-<button (click)="play()" [disabled]="played">Jouer</button>
+<button (click)="play()" [disabled]="played||id==-1">Jouer</button>
 <div [hidden]="!played">Vous avez déjà joué</div>
-
+<div [hidden]="id==-1">Connectez vous pour jouer</div>
 
 <h3>Micro Service P(icture)</h3>
+
+<div [hidden]='id!=-1'>Connectez vous pour voir votre cadeau</div>
+<div [hidden]='price==null&&id==-1'>{{price}}</div>
+<div [hidden]='price!=null||id==-1'>Vous n'avez rien gagné</div>
