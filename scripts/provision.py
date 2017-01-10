@@ -14,6 +14,7 @@ W_INSTANCES_COUNT = 1
 P_INSTANCES_COUNT = 1
 S_INSTANCES_COUNT = 1
 I_INSTANCES_COUNT = 1
+S_MYSQL_INSTANCES_COUNT = 1
 MYSQL_INSTANCES_COUNT = 1
 APPLIWEB_INSTANCES_COUNT = 1
 
@@ -24,6 +25,7 @@ subprocess.call(
     "--parameter p_instances_count={} "
     "--parameter s_instances_count={} "
     "--parameter i_instances_count={} "
+    "--parameter s_mysql_instances_count={} "
     "--parameter mysql_instances_count={} "
     "--parameter consul_server_instances_count={} "
     "--parameter appliWeb_instances_count={}"
@@ -34,6 +36,7 @@ subprocess.call(
         P_INSTANCES_COUNT,
         S_INSTANCES_COUNT,
         I_INSTANCES_COUNT,
+        S_MYSQL_INSTANCES_COUNT,
         MYSQL_INSTANCES_COUNT,
         CONSUL_INSTANCES_COUNT,
         APPLIWEB_INSTANCES_COUNT),
@@ -85,6 +88,8 @@ s_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "s", stack_status["outputs"])))[0]
 i_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "i", stack_status["outputs"])))[0]
+s_mysql_instances_ips = list(
+    map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "s_mysql", stack_status["outputs"])))[0]
 consul_server_instances_ips = list(
     map(lambda x: x["output_value"], filter(lambda x: x["output_key"] == "consul_server", stack_status["outputs"])))[0]
 mysql_instances_ips = list(
@@ -117,6 +122,10 @@ with open("/etc/ansible/hosts", "w") as hosts:
     for cs in consul_server_instances_ips:
         hosts.write(cs + "\n")
 
+    hosts.write("[s_mysql]\n")
+    for sm in s_mysql_instances_ips:
+        hosts.write(sm + "\n")
+
     hosts.write("[mysql]\n")
     for ms in mysql_instances_ips:
         hosts.write(ms + "\n")
@@ -126,11 +135,13 @@ with open("/etc/ansible/hosts", "w") as hosts:
         hosts.write(aw + "\n")
 
     hosts.write("[all_nodes]\n")
-    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips + s_instances_ips + i_instances_ips:
+    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips \
+            + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips + s_instances_ips + i_instances_ips + s_mysql_instances_ips:
         hosts.write(instance + "\n")
 
 with open(os.path.expanduser("~/scan_hosts"), "w") as sh:
-    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips + s_instances_ips + i_instances_ips:
+    for instance in b_instances_ips + w_instances_ips + consul_server_instances_ips \
+            + mysql_instances_ips + appliWeb_instances_ips + p_instances_ips + s_instances_ips + i_instances_ips + s_mysql_instances_ips:
         sh.write("ssh-keyscan -t rsa {} >> ~/.ssh/known_hosts\n".format(instance))
 
 os.chmod(os.path.expanduser("~/scan_hosts"), 0o777)
