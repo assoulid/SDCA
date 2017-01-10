@@ -7,10 +7,14 @@ import 'rxjs/add/operator/timeout';
 @Injectable()
 export class MicroServiceI {
 
-    host:string = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+   host:string;
 
-    constructor(private http: Http){}
-
+    constructor(private http: Http){ 
+        this.host = window.location.protocol+"//"+window.location.hostname;
+        if(window.location.port){
+            this.host += ":"+window.location.port
+        }
+    }
 
 	identification(id:string){
 		let method = '/login/'+id;

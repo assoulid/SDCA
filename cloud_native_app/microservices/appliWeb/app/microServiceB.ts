@@ -8,9 +8,14 @@ import 'rxjs/add/operator/timeout';
 @Injectable()
 export class MicroServiceB {
     
-    host:string = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+    host:string;
 
-    constructor(private http: Http){ }
+    constructor(private http: Http){ 
+        this.host = window.location.protocol+"//"+window.location.hostname;
+        if(window.location.port){
+            this.host += ":"+window.location.port
+        }
+    }
 
     play(id:number){
 		console.log("debut play")

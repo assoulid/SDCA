@@ -5,10 +5,16 @@ import {Http,Headers} from '@angular/http';
 @Injectable()
 export class MicroServiceP {
 
-    host:string = window.location.protocol+"//"+window.location.hostname+":"+window.location.port;
+    host:string;
 
-    constructor(private http: Http){}
+    constructor(private http: Http){ 
+        this.host = window.location.protocol+"//"+window.location.hostname;
+        if(window.location.port){
+            this.host += ":"+window.location.port
+        }
+    }
 
+    
 	getPrice(id:number){
         let method : string = "getPrice"+'/'+id 
         let urlws : string= this.host+method ;
