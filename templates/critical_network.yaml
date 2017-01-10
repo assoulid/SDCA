@@ -18,7 +18,9 @@ resources:
       enable_dhcp: True
       ip_version: 4
       name: critical_network_subnet
+      dns_nameservers: ["10.11.50.1"]
       network: { get_resource: critical_network }
+
 
   router_interface:
     type: OS::Neutron::RouterInterface
