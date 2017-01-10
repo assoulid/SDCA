@@ -10,13 +10,22 @@
 
 
 <h3>Micro Service I(dentification)</h3>
-<div *ngIf="errorI" class="errorMsg">
-    {{errorMsg}}
+
+<div [hide]='id!=-1'>
+    <div *ngIf="errorI" class="errorMsg">
+        {{errorMsg}}
+    </div>
+    <div *ngIf="!errorI">
+        <div>Identifiant : {{id}}</div>
+        <div>Nom : {{name}}</div>
+    </div>
 </div>
-<div *ngIf="!errorI">
-    <div>Identifiant : {{id}}</div>
-    <div>Nom : {{name}}</div>
+<div [hide]='id==-1'>
+    <input [(ngModel)]='name'>
+    <input type='password'[(ngModel)]='password'>
+    <button (click)='identification()'>S'identifier</button>
 </div>
+
 <button (click)="identification()">Reload I</button>
 
 
