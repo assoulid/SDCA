@@ -22,6 +22,12 @@ parameters:
     default: 1
     description: Number of mysql instances to deploy
 
+  mysql_instances_count:
+    type: number
+    label: Mysql instances count
+    default: 1
+    description: Number of mysql instances to deploy
+
 resources:
 
   critical_net:
@@ -63,6 +69,18 @@ resources:
           instance_index: "%index%"
           network: critical_network
 
+  mysql_servers:
+    type: OS::Heat::ResourceGroup
+    depends_on: critical_net
+    properties:
+      count: { get_param: mysql_instances_count }
+      resource_def:
+        type: instance_with_volume.yaml
+        properties:
+          service_name: "mysql"
+          instance_index: "%index%"
+          network: critical_network
+
 outputs:
   w_adresses:
     description: IP addresses of w
@@ -76,3 +94,7 @@ outputs:
   s_mysql_adresses:
     description: IP addresses of s mysql instances
     value: { get_attr: [ s_mysql_servers, ip_addresses ] }
+
+  mysql_adresses:
+    description: IP addresses of mysql instances
+    value: { get_attr: [ mysql_servers, ip_addresses ] }

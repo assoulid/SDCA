@@ -65,6 +65,7 @@ resources:
       w_instances_count: { get_param: w_instances_count }
       s_instances_count: { get_param: s_instances_count }
       s_mysql_instances_count: { get_param: s_mysql_instances_count }
+      mysql_instances_count: { get_param: mysql_instances_count }
 
   consul_servers:
     type: OS::Heat::ResourceGroup
@@ -106,16 +107,6 @@ resources:
           service_name: "i"
           instance_index: "%index%"
 
-  mysql_servers:
-    type: OS::Heat::ResourceGroup
-    properties:
-      count: { get_param: mysql_instances_count }
-      resource_def:
-        type: instance_with_volume.yaml
-        properties:
-          service_name: "mysql"
-          instance_index: "%index%"
-
   appliWeb_servers:
     type: OS::Heat::ResourceGroup
     properties:
@@ -125,7 +116,6 @@ resources:
         properties:
           service_name: "appliWeb"
           instance_index: "%index%"
-          flavor: "m1.small"
 
 outputs:
   b:
@@ -154,7 +144,7 @@ outputs:
 
   mysql:
     description: IP addresses of mysql instances
-    value: { get_attr: [ mysql_servers, ip_addresses ] }
+    value: { get_attr: [ critical_components, mysql_adresses ] }
 
   s_mysql:
     description: IP addresses of mysql instances
