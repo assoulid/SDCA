@@ -18,7 +18,6 @@ app.get('/play/:id', function(req, res) {
     var id = req.params.id;
     request(DNSAddr + "b", function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body); // Show the HTML for the Modulus homepage.
             var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
                 var addrB = bodyParsed[0]["Address"]
@@ -50,7 +49,6 @@ app.get('/login/:name/:password', function(req, res) {
     console.log("requete DNS : "+DNSAddr + "i")
     request(DNSAddr + "i", function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body); // Show the HTML for the Modulus homepage.
             var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
                 var addrI = bodyParsed[0]["Address"]
@@ -91,17 +89,16 @@ app.get('/status/:id', function(req, res) {
     var id = req.params.id;
     request(DNSAddr + "s", function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body); // Show the HTML for the Modulus homepage.
             var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
                 var addrS = bodyParsed[0]["Address"]
                 var portS = bodyParsed[0]["ServicePort"]
                 request('http://'+addrS+":"+portS+'/status/'+id, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        console.log(body); // Show the HTML for the Modulus homepage.
+                        console.log("Réponse de I : "+body); // Show the HTML for the Modulus homepage.
                         res.send(body)
                     }else{
-                        console.log(error)
+                        console.log("Erreur de I : "+error)
                         res.send(error)
                     }
                 });
@@ -120,17 +117,16 @@ app.get('/getPrice/:id', function(req, res) {
     var id = req.params.id;
     request(DNSAddr + "p", function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body); // Show the HTML for the Modulus homepage.
             var bodyParsed = JSON.parse(body)
             if(body && body.length > 0){
                 var addrP = bodyParsed[0]["Address"]
                 var portP = bodyParsed[0]["ServicePort"]
                 request('http://'+addrP+":"+portP+'/'+id, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        console.log(body); // Show the HTML for the Modulus homepage.
+                        console.log("Réponse de P : "+JSON.stringify(body));
                         res.send(body)
                     }else{
-                        console.log(error)
+                        console.log("Erreur de P : "+error)
                         res.send(error)
                     }
                 });
