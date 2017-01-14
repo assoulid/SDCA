@@ -26,10 +26,10 @@ app.get('/play/:id', function(req, res) {
                 console.log("Acces à "+url)
                 request(url, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        console.log(body); // Show the HTML for the Modulus homepage.
+                        console.log("Réponse de B : "+body); // Show the HTML for the Modulus homepage.
                         res.send(body)
                     }else{
-                        console.log(error)
+                        console.log("Erreur B : "+error)
                         res.send(error)
                     }
                 });
@@ -58,7 +58,6 @@ app.get('/login/:name/:password', function(req, res) {
                 request( {
                         url: url, 
                         method: 'POST',
-                        //Lets post the following key/values as form
                         form: {
                             login: name,
                             password: password
@@ -66,10 +65,10 @@ app.get('/login/:name/:password', function(req, res) {
                     }, 
                     function (error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            console.log(body); // Show the HTML for the Modulus homepage.
+                            console.log("Réponse I : "+body); // Show the HTML for the Modulus homepage.
                             res.send(body)
                         }else{
-                            console.log(error)
+                            console.log("Erreur I : "+error)
                             res.send(error)
                         }
                     }
@@ -95,10 +94,10 @@ app.get('/status/:id', function(req, res) {
                 var portS = bodyParsed[0]["ServicePort"]
                 request('http://'+addrS+":"+portS+'/status/'+id, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        console.log("Réponse de I : "+body); // Show the HTML for the Modulus homepage.
+                        console.log("Réponse de S : "+body); // Show the HTML for the Modulus homepage.
                         res.send(body)
                     }else{
-                        console.log("Erreur de I : "+error)
+                        console.log("Erreur de S : "+error)
                         res.send(error)
                     }
                 });

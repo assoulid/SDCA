@@ -45,10 +45,10 @@ export class Home {
 	play(){
 		this.microServiceB.play(this.id).subscribe(
 			data=>{
-				console.log("Réponse du service P" + JSON.stringify(data))
+				console.log("Réponse du service B : " + JSON.stringify(data))
 			},
 			error=>{
-				console.log("Le service B ne répond pas...");
+				console.log("Le service B ne répond pas... "+JSON.stringify(error));
 			}
 		);
 	}
@@ -66,7 +66,7 @@ export class Home {
 				}
 			},
 			error=>{
-				console.log("Le service I ne répond pas...")
+				console.log("Le service I ne répond pas... "+JSON.stringify(error))
 				this.errorI=true;
 				this.errorMsgI = "Le service I ne répond pas..."
 			}
@@ -79,7 +79,7 @@ export class Home {
 				console.log("Reponse du service S : "+JSON.stringify(data))
 			},
 			error=>{
-				console.log("Le service S ne répond pas...")
+				console.log("Le service S ne répond pas... "+JSON.stringify(error))
 				this.errorS=true;
 				this.errorMsgS = "Le service S ne répond pas..."
 			}
@@ -92,7 +92,7 @@ export class Home {
 				console.log("Reponse du service P : "+JSON.stringify(data))
 			},
 			error=>{
-				console.log("Le service P ne répond pas...")
+				console.log("Le service P ne répond pas... "+JSON.stringify(error))
 				this.errorS=true;
 				this.errorMsgS = "Le service P ne répond pas..."
 			}
