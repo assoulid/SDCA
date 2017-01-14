@@ -90,6 +90,7 @@ export class Home {
 		this.microServiceP.getPrice(this.id.toString()).subscribe(
 			data=>{
 				console.log("Reponse du service P : "+JSON.stringify(data))
+				this.gift = data["_body"]
 			},
 			error=>{
 				console.log("Le service P ne répond pas... "+JSON.stringify(error))
