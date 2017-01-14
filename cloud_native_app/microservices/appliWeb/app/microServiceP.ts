@@ -15,7 +15,7 @@ export class MicroServiceP {
     }
 
     
-	getPrice(id:number){
+	getPrice(id:string){
         let method : string = "/getPrice"+'/'+id 
         let urlws : string= this.host+method ;
         let headers = new Headers();

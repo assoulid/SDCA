@@ -26,6 +26,9 @@ export class Home {
     errorB = false;
     errorMsgB = "";
 
+	errorS = false;
+    errorMsgS = "";
+
     errorP = false;
     errorMsgP = "";
     played : boolean = null;
@@ -58,6 +61,7 @@ export class Home {
 				if(data && data.error==undefined){
 					console.log(JSON.stringify(data));
 					this.id = data[0]["id_customer"];
+					this.getPrice();
 				}else{
 					this.errorI = true;
 					this.errorMsgI = "Identifiant incorrect"
@@ -71,5 +75,32 @@ export class Home {
 		);
 	}
 
+	getStatus(){
+		this.microServiceS.getStatus(this.id.toString()).subscribe(
+			data=>{
+				console.log("Reponse du service S : ")
+				console.log(JSON.stringify(data))
+			},
+			error=>{
+				console.log("Le service S ne répond pas...")
+				this.errorS=true;
+				this.errorMsgS = "Le service S ne répond pas..."
+			}
+		)
+	}
+
+	getPrice(){
+		this.microServiceP.getPrice(this.id.toString()).subscribe(
+			data=>{
+				console.log("Reponse du service P : ")
+				console.log(JSON.stringify(data))
+			},
+			error=>{
+				console.log("Le service P ne répond pas...")
+				this.errorS=true;
+				this.errorMsgS = "Le service P ne répond pas..."
+			}
+		)
+	}
 
 }
