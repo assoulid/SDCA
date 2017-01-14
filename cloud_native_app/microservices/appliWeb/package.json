@@ -5,8 +5,8 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lite": "lite-server",
-    "build": "tsc -w --rootDir app --target ES5 --module system --moduleResolution node --sourceMap true --emitDecoratorMetadata true --experimentalDecorators true --removeComments false --outDir bin",
-    "start": "npm run build && node index.js"
+    "build": "tsc --rootDir app --target ES5 --module system --moduleResolution node --sourceMap true --emitDecoratorMetadata true --experimentalDecorators true --removeComments false --outDir bin",
+    "start": "npm run build & node index.js"
   },
   "license": "ISC",
   "dependencies": {
