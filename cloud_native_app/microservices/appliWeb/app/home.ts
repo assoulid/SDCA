@@ -45,8 +45,7 @@ export class Home {
 	play(){
 		this.microServiceB.play(this.id).subscribe(
 			data=>{
-				console.log("Resultat final du PLAY")
-                console.log(data);
+				console.log("Réponse du service P" + JSON.stringify(data))
 			},
 			error=>{
 				console.log("Le service B ne répond pas...");
@@ -57,9 +56,8 @@ export class Home {
     identification(){
 		this.microServiceI.identification(this.name, this.password).subscribe(
 			data=>{
-				console.log("donnée de l'auth :" +JSON.stringify(data))
+				console.log("Réponse du service I :" +JSON.stringify(data))
 				if(data && data.error==undefined){
-					console.log(JSON.stringify(data));
 					this.id = data[0]["id_customer"];
 					this.getPrice();
 				}else{
@@ -78,8 +76,7 @@ export class Home {
 	getStatus(){
 		this.microServiceS.getStatus(this.id.toString()).subscribe(
 			data=>{
-				console.log("Reponse du service S : ")
-				console.log(JSON.stringify(data))
+				console.log("Reponse du service S : "+JSON.stringify(data))
 			},
 			error=>{
 				console.log("Le service S ne répond pas...")
@@ -92,8 +89,7 @@ export class Home {
 	getPrice(){
 		this.microServiceP.getPrice(this.id.toString()).subscribe(
 			data=>{
-				console.log("Reponse du service P : ")
-				console.log(JSON.stringify(data))
+				console.log("Reponse du service P : "+JSON.stringify(data))
 			},
 			error=>{
 				console.log("Le service P ne répond pas...")

@@ -114,7 +114,7 @@ app.get('/status/:id', function(req, res) {
 });
 
 
-app.get('/picture/:id', function(req, res) {
+app.get('/getPrice/:id', function(req, res) {
 
     console.log('picture : '+req.params.id);
     var id = req.params.id;
