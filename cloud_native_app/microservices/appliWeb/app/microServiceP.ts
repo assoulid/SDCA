@@ -24,7 +24,6 @@ export class MicroServiceP {
         console.log("Acces à l'adresse : "+urlws);
         return this.http.get(urlws,{headers:headers})
             .timeout(5000)
-            .map(res => res.json())
             .map((res: any) => {
                 return res;
             })
