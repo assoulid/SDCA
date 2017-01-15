@@ -1,8 +1,8 @@
 {
   "Name": "s",
-  "Port": 8090,
+  "Port": 3220,
   "Check": {
-    "HTTP": "http://localhost:8090/",
+    "HTTP": "http://localhost:3220/",
     "Interval": "10s"
   }
 }
