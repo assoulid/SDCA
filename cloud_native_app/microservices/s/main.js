@@ -55,7 +55,7 @@ app.get('/status/:id', function (req, res) {
 
       // Executing query
       result.id = id;
-      connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
+      connection.query('SELECT * FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
         // Closing connection
         connection.end();
         if (!err) {
