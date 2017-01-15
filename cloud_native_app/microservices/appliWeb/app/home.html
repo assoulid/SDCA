@@ -31,8 +31,8 @@
 
 
 <h3>Micro Service B(utton)</h3>
-<button (click)="play()" [disabled]="played||id==-1">Jouer</button>
-<div [hidden]="!played">Vous avez déjà joué</div>
+<button (click)="play()" [disabled]="hasPlayed||id==-1">Jouer</button>
+<div [hidden]="!hasPlayed">Vous avez déjà joué</div>
 <div [hidden]="id!=-1">Connectez vous pour jouer</div>
 
 <h3>Micro Service P(icture)</h3>
