@@ -38,5 +38,6 @@
 <h3>Micro Service P(icture)</h3>
 
 <div [hidden]='id!=-1'>Connectez vous pour voir votre cadeau</div>
-<div [hidden]='hasWon||(id==-1)'>Vous n'avez rien gagné</div>
-<img [hidden]='!hasWon||(id==-1)' src='data:image/gif;base64,{{gift}}'/>
+<div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore jouez</div>
+<div [hidden]='!hasPlayed||hasWon||(id==-1)'>Vous n'avez rien gagné</div>
+<img [hidden]='!hasPlayed||!hasWon||(id==-1)' src='data:image/gif;base64,{{gift}}'/>

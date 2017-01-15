@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/status/:id', function (req, res) {
-  var result = {"id":"", "aJoue":""};
+  var result = {"id":"", "hasPlayed":""};
   var id = req.params.id;
   console.log("requete GET : status/"+id)
 
@@ -57,7 +57,7 @@ app.get('/status/:id', function (req, res) {
       result.id = id;
       connection.query('SELECT has_played FROM has_played WHERE id_customer='+id, function(err, rows, fields) {
         // Closing connection
-        // connection.end();
+        connection.end();
         if (!err) {
           // console.log(rows[0].has_played);
           hasPlayed = rows[0].has_played;
