@@ -60,6 +60,7 @@ export class Home {
 				if(data && data.error==undefined){
 					this.id = data[0]["id_customer"];
 					this.getPrice();
+					this.getStatus();
 				}else{
 					this.errorI = true;
 					this.errorMsgI = "Identifiant incorrect"
