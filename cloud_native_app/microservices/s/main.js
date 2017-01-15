@@ -60,8 +60,10 @@ app.get('/status/:id', function (req, res) {
         // connection.end();
         if (!err) {
           // console.log(rows[0].has_played);
-          aJoue = rows[0].has_played;
-          result.aJoue = !!+aJoue; // Converts int to boolean
+          hasPlayed = rows[0].has_played;
+          result.hasPlayed = !!+hasPlayed; // Converts int to boolean
+          hasWon = rows[0].has_won;
+          result.hasWon = !!+hasWon; // Converts int to boolean
           res.send(JSON.stringify(result));
         }
         else

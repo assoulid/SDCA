@@ -31,7 +31,8 @@ export class Home {
 
     errorP = false;
     errorMsgP = "";
-    played : boolean = null;
+    hasPlayed : boolean = null;
+	hasWon : boolean = false;
 
     gift:string= null;
 
@@ -46,6 +47,7 @@ export class Home {
 		this.microServiceB.play(this.id).subscribe(
 			data=>{
 				console.log("Réponse du service B : " + JSON.stringify(data))
+				this.getStatus();
 			},
 			error=>{
 				console.log("Le service B ne répond pas... "+JSON.stringify(error));
@@ -59,7 +61,6 @@ export class Home {
 				console.log("Réponse du service I :" +JSON.stringify(data))
 				if(data && data.error==undefined){
 					this.id = data[0]["id_customer"];
-					this.getPrice();
 					this.getStatus();
 				}else{
 					this.errorI = true;
@@ -78,6 +79,11 @@ export class Home {
 		this.microServiceS.getStatus(this.id.toString()).subscribe(
 			data=>{
 				console.log("Reponse du service S : "+JSON.stringify(data))
+				this.hasPlayed = data["hasPlayed"];
+				this.hasWon = data["hasWon"];
+				if(this.hasWon){
+					this.getPrice();
+				}
 			},
 			error=>{
 				console.log("Le service S ne répond pas... "+JSON.stringify(error))
