@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/status/:id', function (req, res) {
-  var result = {"id":"", "hasPlayed":""};
+  var result = {"id":null,"hasPlayed":null,"hasWon":null};
   var id = req.params.id;
   console.log("requete GET : status/"+id)
 
