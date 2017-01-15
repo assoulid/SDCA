@@ -1,13 +1,6 @@
 <h1>Projet HP : Cloud avancé</h1>
 
 
-<!--
-<micro-service-I class="microService">Loading micro-service Identification...</micro-service-I>
-<micro-service-B class="microService">Loading micro-service Button...</micro-service-B>
-<micro-service-P class="microService">Loading micro-service Picture...</micro-service-P>
--->
-
-<label>ID</label><input [(ngModel)]='id'>
 
 <h3>Micro Service I(dentification)</h3>
 
@@ -17,12 +10,15 @@
     </div>
     <div [hidden]="errorI">
         <div>Identifiant : {{id}}</div>
-        <div>Email : {{name}}</div>
+        <div>Prénom : {{firstname}}</div>
+        <div>Nom : {{lastname}}</div>
+        <div>Email : {{mail}}</div>
+        <button (click)='deconnexion()'>Se déconnecter</button>
     </div>
 </div>
 <div *ngIf='id==-1'>
     <label>Email</label>
-    <input [(ngModel)]='name'>
+    <input [(ngModel)]='mail'>
     <label>Mot de passe</label>
     <input type='password' [(ngModel)]='password'>
     <button (click)='identification()'>S'identifier</button>
@@ -31,9 +27,12 @@
 
 
 <h3>Micro Service B(utton)</h3>
+
 <button (click)="play()" [disabled]="hasPlayed||id==-1">Jouer</button>
 <div [hidden]="!hasPlayed">Vous avez déjà joué</div>
 <div [hidden]="id!=-1">Connectez vous pour jouer</div>
+
+
 
 <h3>Micro Service P(icture)</h3>
 

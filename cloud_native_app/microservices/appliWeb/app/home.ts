@@ -18,7 +18,9 @@ export class Home {
 
     id : number = -1;
 
-    name : string = "";
+    firstname : string = "";
+	lastname : string = "";
+	mail : string = "";
     password : string = "";;
     errorI = false;
     errorMsgI = "";
@@ -56,11 +58,13 @@ export class Home {
 	}
 
     identification(){
-		this.microServiceI.identification(this.name, this.password).subscribe(
+		this.microServiceI.identification(this.mail, this.password).subscribe(
 			data=>{
 				console.log("Réponse du service I :" +JSON.stringify(data))
 				if(data && data.error==undefined){
 					this.id = data[0]["id_customer"];
+					this.firstname = data[0]["firstname"];
+					this.lastname = data[0]["lastname"];
 					this.getStatus();
 				}else{
 					this.errorI = true;
@@ -73,6 +77,25 @@ export class Home {
 				this.errorMsgI = "Le service I ne répond pas..."
 			}
 		);
+	}
+
+	deconnexion(){
+		this.id = -1;
+		this.firstname = "";
+		this.lastname = "";
+		this.mail = "";
+		this.password = "";;
+		this.errorI = false;
+		this.errorMsgI = "";
+		this.errorB = false;
+		this.errorMsgB = "";
+		this.errorS = false;
+		this.errorMsgS = "";
+		this.errorP = false;
+		this.errorMsgP = "";
+		this.hasPlayed = null;
+		this.hasWon = false;
+		this.gift= null;
 	}
 
 	getStatus(){
