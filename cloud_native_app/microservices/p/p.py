@@ -33,14 +33,14 @@ def swift_get(id):
     object_body = get_image_from_swift(id)
 
     # decodage de l'image
-
-    img = object_body["img"].encode("ascii")
-    img = base64.b64decode(img)
+    img = object_body["img"]
+    #img = object_body["img"].encode("ascii")
+    #img = base64.b64decode(img)
 
     resp = make_response(img)
     resp.status_code = 200
 
-    resp.headers["Content-Type"] = "image/jpeg"
+    resp.headers["Content-Type"] = "application/json"
 
     add_headers(resp)
     return resp
