@@ -1,67 +1,53 @@
----
-- hosts: appliWeb
-  user: centos
-  vars:
-   os_pass: "{{ lookup('env','OS_PASSWORD') }}"
-  tasks:
-
-    - name: Send appliWeb microservice directory
-      copy:
-        src: ../cloud_native_app/microservices/appliWeb
+--- 
+- 
+  hosts: appliWeb
+  tasks: 
+    - 
+      copy: 
         dest: /home/centos/
-
-    - name: Run consul agent and join cluster
-      shell:
-        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
-
-    - name: Wait for agent to run or fail
-      shell:
-        cmd: consul members
-      register: result
-      until: result.stdout.find("{{ inventory_hostname }}") != -1
-      retries: 5
+        src: ../cloud_native_app/microservices/appliWeb
+      name: "Send appliWeb microservice directory"
+    - 
+      name: "Run consul agent and join cluster"
+      shell: 
+        cmd: "screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}"
+    - 
       delay: 5
-
-    # - name: Stop appliWeb docker container if already running
-    #   shell:
-    #     cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=appli_web:appli_web))
-    #   ignore_errors: yes
-
-    # - name: Build appliWeb docker image
-    #   shell:
-    #     chdir: ~/appliWeb
-    #     cmd: sudo docker build -t appli_web:appli_web .
-
-    # - name: Run appliWeb docker container
-    #   shell:
-    #     cmd: docker run  --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 80:3000 -p 8500:8500 appli_web:appli_web
-    #   become: true
-
-    - name: Access to EPEL repo
-      yum:
-        name: epel-release
+      name: "Wait for agent to run or fail"
+      register: result
+      retries: 5
+      shell: 
+        cmd: "consul members"
+      until: "result.stdout.find(\"{{ inventory_hostname }}\") != -1"
+    - 
       become: true
-
-    - name : Install NodeJs
-      yum:
+      name: "Access to EPEL repo"
+      yum: 
+        name: epel-release
+    - 
+      become: true
+      name: "Install NodeJs"
+      yum: 
         name: nodejs
         state: latest
+    - 
+      name: "Install dependencies"
+      shell: 
+        chdir: ~/appliWeb
+        cmd: "npm install"
+    - 
       become: true
-
-    - name: Install dependencies
-       shell:
-         chdir: ~/appliWeb
-         cmd: npm install
-    
-    - name: Run appliWeb service
-       shell:
-         chdir: ~/appliWeb
-         cmd: npm start
-       become: true
-
-    - name: Register appliWeb service
-      uri:
-        url: http://localhost:8500/v1/agent/service/register
-        method: PUT
+      name: "Run appliWeb service"
+      shell: 
+        chdir: ~/appliWeb
+        cmd: "npm start"
+    - 
+      name: "Register appliWeb service"
+      uri: 
         body: "{{ lookup('file','register_appliWeb.json') }}"
         body_format: json
+        method: PUT
+        url: "http://localhost:8500/v1/agent/service/register"
+  user: centos
+  vars: 
+    os_pass: "{{ lookup('env','OS_PASSWORD') }}"
