@@ -22,20 +22,42 @@
       retries: 5
       delay: 5
 
-    - name: Stop appliWeb docker container if already running
-      shell:
-        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=appli_web:appli_web))
-      ignore_errors: yes
+    # - name: Stop appliWeb docker container if already running
+    #   shell:
+    #     cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=appli_web:appli_web))
+    #   ignore_errors: yes
 
-    - name: Build appliWeb docker image
-      shell:
-        chdir: ~/appliWeb
-        cmd: sudo docker build -t appli_web:appli_web .
+    # - name: Build appliWeb docker image
+    #   shell:
+    #     chdir: ~/appliWeb
+    #     cmd: sudo docker build -t appli_web:appli_web .
 
-    - name: Run appliWeb docker container
-      shell:
-        cmd: docker run  --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 80:3000 -p 8500:8500 appli_web:appli_web
+    # - name: Run appliWeb docker container
+    #   shell:
+    #     cmd: docker run  --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 80:3000 -p 8500:8500 appli_web:appli_web
+    #   become: true
+
+    - name: Access to EPEL repo
+      yum:
+        name: epel-release
       become: true
+
+    - name : Install NodeJs
+      yum:
+        name: nodejs
+        state: latest
+      become: true
+
+    - name: Install dependencies
+       shell:
+         chdir: ~/appliWeb
+         cmd: npm install
+    
+    - name: Run appliWeb service
+       shell:
+         chdir: ~/appliWeb
+         cmd: npm start
+       become: true
 
     - name: Register appliWeb service
       uri:
