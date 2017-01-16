@@ -20,6 +20,11 @@
         cmd: "consul members"
       until: "result.stdout.find(\"{{ inventory_hostname }}\") != -1"
     - 
+      name: Stop server if running
+      shell:
+        cmd: pkill node
+      become: true
+    - 
       become: true
       name: "Access to EPEL repo"
       yum: 
@@ -33,14 +38,15 @@
     - 
       name: "Install dependencies"
       shell: 
-        chdir: ~/appliWeb
+        chdir: /home/centos/appliWeb
         cmd: "npm install"
     - 
       become: true
+      become_method: sudo
       name: "Run appliWeb service"
       shell: 
-        chdir: ~/appliWeb
-        cmd: "npm start"
+        chdir: /home/centos/appliWeb
+        cmd: "npm start &"
     - 
       name: "Register appliWeb service"
       uri: 
