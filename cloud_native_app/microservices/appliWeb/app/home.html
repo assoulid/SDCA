@@ -29,6 +29,15 @@
     {{errorMsgI}}
 </div>
 
+<h3>Micro Service S(tatus) : 
+    <span [hidden]='errorS' class='runningService'>En fonctionnement</span>
+    <span [hidden]='!errorS' class='stoppedService'>Indisponible</span>
+</h3>
+<div [hidden]="!hasPlayed||id==-1">Vous avez déjà joué</div>
+<div [hidden]="hasPlayed||id==-1">Vous n'avez pas encore joué</div>
+<div [hidden]="id!=-1">Connectez vous pour jouer</div>
+<div [hidden]='!errorS'>{{errorMsgS}}</div>
+
 
 <h3>Micro Service B(utton) : 
     <span [hidden]='errorB' class='runningService'>En fonctionnement</span>
