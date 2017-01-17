@@ -52,6 +52,7 @@ export class Home {
 				console.log("Réponse du service B : " + JSON.stringify(data))
 				if(data && data.error==undefined && data.errno==undefined && data.message==='done'){
 					this.getStatus();
+					this.errorB = false;
 				}else{
 					this.errorB = true;
 					this.errorMsgB = "Le service B a rencontré une erreur"
@@ -75,6 +76,7 @@ export class Home {
 					this.id = data[0]["id_customer"];
 					this.firstname = data[0]["firstname"];
 					this.lastname = data[0]["lastname"];
+					this.errorI=false;
 					this.getStatus();
 				}else if(data.errno){
 					this.errorI = true;
@@ -121,6 +123,7 @@ export class Home {
 					if(this.hasWon){
 						this.getPrice();
 					}
+					this.errorS=false;
 				}else{
 					console.log("Le service S ne répond pas... ")
 					this.errorS=true;
@@ -141,6 +144,7 @@ export class Home {
 				console.log("Reponse du service P : "+JSON.stringify(data))
 				if(data && data.error==undefined && data.errno==undefined){
 					this.gift = data["_body"]
+					this.errorP=false;
 				}else{
 					this.errorP=true;
 					this.errorMsgP = "Le service P ne répond pas..."

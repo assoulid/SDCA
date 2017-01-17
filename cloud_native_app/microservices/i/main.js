@@ -55,13 +55,13 @@ var serveur = http.createServer(function (req, res) {
                         if (!err) {
                             if (rows.length == 0) {
                                 console.log('Pas de correspondance: ' + parsedbody['login'] + "/" + parsedbody['password']);
-                                res.end('Pas de correspondance.\n');
+                                res.end(JSON.stringify({error:'Pas de correspondance'}));
                             } else {
                                 console.log('The solution is: ', rows);
                                 res.end(JSON.stringify(rows));
                             }
                         } else {
-                            console.log('Error while performing Query.');
+                            console.log({error:'Error while performing Query.'});
                             res.end(err);
                         }
                     });
