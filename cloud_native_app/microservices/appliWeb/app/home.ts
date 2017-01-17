@@ -3,7 +3,7 @@ import {MicroServiceI} from "./microServiceI";
 import {MicroServiceB} from "./microServiceB";
 import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
-import {Dns} from "./Dns";
+import {Dns} from "./dns";
 
 @Component({
    selector: 'home',
