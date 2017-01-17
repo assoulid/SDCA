@@ -24,6 +24,8 @@
       shell:
         cmd: pkill node
       become: true
+      become_method: sudo
+      ignore_errors: yes
     - 
       become: true
       name: "Access to EPEL repo"
@@ -40,13 +42,26 @@
       shell: 
         chdir: /home/centos/appliWeb
         cmd: "npm install"
+    -
+      name: "Compile typescript files"
+      shell:
+        chdir: /home/centos/appliWeb
+        cmd: "npm run build"
+
+    - name: "Install forever to run Node.js app."
+      npm: name=forever global=yes state=present
+      become: true
+    
+    - name: "Check list of Node.js apps running."
+      command: forever list
+      register: forever_list
+      changed_when: false
     - 
       become: true
       become_method: sudo
       name: "Run appliWeb service"
-      shell: 
-        chdir: /home/centos/appliWeb
-        cmd: "npm start &"
+      command: "forever start /home/centos/appliWeb/index.js"
+      when: "forever_list.stdout.find('/centos/home/appliWeb/index.js') == -1"
     - 
       name: "Register appliWeb service"
       uri: 
