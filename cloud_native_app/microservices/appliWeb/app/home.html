@@ -35,7 +35,7 @@
 </h3>
 <div [hidden]="!hasPlayed||id==-1">Vous avez déjà joué</div>
 <div [hidden]="hasPlayed||id==-1">Vous n'avez pas encore joué</div>
-<div [hidden]="id!=-1">Connectez vous pour jouer</div>
+<div [hidden]="id!=-1">Connectez vous voir votre status</div>
 <div [hidden]='!errorS'>{{errorMsgS}}</div>
 
 
@@ -47,7 +47,6 @@
     <button id="playButton" (click)="play()" [disabled]="hasPlayed||id==-1||playing">Jouer</button>
     <div class="loader" *ngIf='playing'></div>
 </div>
-<div [hidden]="!hasPlayed">Vous avez déjà joué</div>
 <div [hidden]="id!=-1">Connectez vous pour jouer</div>
 <div [hidden]='!errorB'>{{errorMsgB}}</div>
 
