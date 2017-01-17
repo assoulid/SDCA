@@ -132,7 +132,7 @@ app.get('/getPrice/:id', function(req, res) {
             }
         }else{
             console.log(error)
-            res.send(error)
+            res.send(JSON.stringify(error))
         }
     });
 });

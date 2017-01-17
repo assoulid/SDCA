@@ -146,7 +146,8 @@ export class Home {
 		this.microServiceP.getPrice(this.id.toString()).subscribe(
 			data=>{
 				console.log("Reponse du service P : "+JSON.stringify(data))
-				if(data && data.error==undefined && data.errno==undefined){
+				if(data && data.error==undefined && data.errno==undefined &&
+					data["_body"] && data["_body"].substr(data["_body"].length-1)==="="){
 					this.gift = data["_body"]
 					this.errorP=false;
 				}else{
