@@ -1,13 +1,13 @@
 --- 
 - 
   hosts: appliWeb
-  tasks: 
-    - 
-      copy: 
-        dest: /home/centos/
+  tasks:
+
+    - name: Send appliWeb microservice directory
+      copy:
         src: ../cloud_native_app/microservices/appliWeb
-      name: "Send appliWeb microservice directory"
-    - 
+        dest: /home/centos/
+    -
       name: "Run consul agent and join cluster"
       shell: 
         cmd: "screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}"

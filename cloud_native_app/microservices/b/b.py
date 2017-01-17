@@ -127,6 +127,10 @@ def update_user_status(id, player_won):
 
 
 def get_service_instance(service_name):
+
+    # passing_serices = requests.get('http://localhost:8500/v1/health/state/passing').json()
+
+
     service_info = requests.get('http://localhost:8500/v1/catalog/service/{}'.format(service_name)).json()
     """
         w_info example output:
