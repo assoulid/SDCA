@@ -31,6 +31,6 @@
     height: auto;
 }
 
-.infoI{
-    float: left;
+.infoI:first-child input{
+    margin-left: 46px;
 }
