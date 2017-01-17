@@ -6,7 +6,7 @@
 </h3>
 
 <div *ngIf='id!=-1'>
-    <div [hidden]="errorI">
+    <div [hidden]="errorI||errorLogin">
         <div>Identifiant : {{id}}</div>
         <div>Prénom : {{firstname}}</div>
         <div>Nom : {{lastname}}</div>
@@ -25,7 +25,7 @@
     </div>
     <button (click)='identification()'>S'identifier</button>
 </div>
-<div [hidden]="!errorI" class="errorMsgI">
+<div [hidden]="!errorI&&!errorLogin" class="errorMsgI">
     {{errorMsgI}}
 </div>
 

@@ -24,7 +24,7 @@ export class Home {
     password : string = "";;
     errorI = false;
     errorMsgI = "";
-
+	errorLogin = false;
     errorB = false;
     errorMsgB = "";
 
@@ -77,18 +77,22 @@ export class Home {
 					this.firstname = data[0]["firstname"];
 					this.lastname = data[0]["lastname"];
 					this.errorI=false;
+					this.errorLogin = false;
 					this.getStatus();
 				}else if(data.errno){
+					this.errorLogin = false;
 					this.errorI = true;
 					this.errorMsgI = "Service indisponible"
-				}else{
-					this.errorI = true;
+				}else if(data.error==="Pas de correspondance"){
+					this.errorLogin = true;
+					this.errorI = false;
 					this.errorMsgI = "Identifiant incorrect"
 				}
 			},
 			error=>{
 				console.log("Le service I ne répond pas... "+JSON.stringify(error))
 				this.errorI=true;
+				this.errorLogin = false;
 				this.errorMsgI = "Le service I ne répond pas..."
 			}
 		);
