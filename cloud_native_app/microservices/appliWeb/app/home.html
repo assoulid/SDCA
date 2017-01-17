@@ -1,13 +1,11 @@
-<h1>Projet HP : Cloud avancé</h1>
+<h1>Projet Cloud avancé : Openstack</h1>
 
-
-
-<h3>Micro Service I(dentification)</h3>
+<h3>Micro Service I(dentification) : 
+    <span [hidden]='errorI' class='runningService'>En fonctionnement</span>
+    <span [hidden]='!errorI' class='stoppedService'>Indisponible</span>
+</h3>
 
 <div *ngIf='id!=-1'>
-    <div [hidden]="!errorI" class="errorMsg">
-        {{errorMsg}}
-    </div>
     <div [hidden]="errorI">
         <div>Identifiant : {{id}}</div>
         <div>Prénom : {{firstname}}</div>
@@ -17,26 +15,40 @@
     </div>
 </div>
 <div *ngIf='id==-1'>
-    <label>Email</label>
-    <input [(ngModel)]='mail'>
-    <label>Mot de passe</label>
-    <input type='password' [(ngModel)]='password'>
+    <div class="infoI">
+        <label>Email</label>
+        <input [(ngModel)]='mail'>
+    </div>
+    <div class="infoI">
+        <label>Mot de passe</label>
+        <input type='password' [(ngModel)]='password'>
+    </div>
     <button (click)='identification()'>S'identifier</button>
+</div>
+<div [hidden]="!errorI" class="errorMsgI">
+    {{errorMsgI}}
 </div>
 
 
-
-<h3>Micro Service B(utton)</h3>
-
-<button (click)="play()" [disabled]="hasPlayed||id==-1">Jouer</button>
+<h3>Micro Service B(utton) : 
+    <span [hidden]='errorB' class='runningService'>En fonctionnement</span>
+    <span [hidden]='!errorB' class='stoppedService'>Indisponible</span>
+</h3>
+<div id='playZone'>
+    <button id="playButton" (click)="play()" [disabled]="hasPlayed||id==-1||playing">Jouer</button>
+    <div class="loader" *ngIf='playing'></div>
+</div>
 <div [hidden]="!hasPlayed">Vous avez déjà joué</div>
 <div [hidden]="id!=-1">Connectez vous pour jouer</div>
+<div [hidden]='!errorB'>{{errorMsgB}}</div>
 
 
-
-<h3>Micro Service P(icture)</h3>
-
+<h3>Micro Service P(icture) : 
+    <span [hidden]='errorP' class='runningService'>En fonctionnement</span>
+    <span [hidden]='!errorP' class='stoppedService'>Indisponible</span>
+</h3>
+<div [hidden]='!errorP'>{{errorMsgP}}</div>
 <div [hidden]='id!=-1'>Connectez vous pour voir votre cadeau</div>
 <div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore jouez</div>
 <div [hidden]='!hasPlayed||hasWon||(id==-1)'>Vous n'avez rien gagné</div>
-<img [hidden]='!hasPlayed||!hasWon||(id==-1)' src='data:image/gif;base64,{{gift}}'/>
+<img id='price' *ngIf='hasPlayed&&hasWon&&id!=-1' src='data:image/gif;base64,{{gift}}'/>

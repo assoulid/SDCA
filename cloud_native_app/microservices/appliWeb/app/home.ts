@@ -35,7 +35,7 @@ export class Home {
     errorMsgP = "";
     hasPlayed : boolean = null;
 	hasWon : boolean = false;
-
+	playing : boolean = false;
     gift:string= null;
 
     constructor(private microServiceB : MicroServiceB,
@@ -46,13 +46,23 @@ export class Home {
     }
 
 	play(){
+		this.playing = true;
 		this.microServiceB.play(this.id).subscribe(
 			data=>{
 				console.log("Réponse du service B : " + JSON.stringify(data))
-				this.getStatus();
+				if(data && data.error==undefined && data.errno==undefined && data.message==='done'){
+					this.getStatus();
+				}else{
+					this.errorB = true;
+					this.errorMsgB = "Le service B a rencontré une erreur"
+				}
+				this.playing = false;
 			},
 			error=>{
-				console.log("Le service B ne répond pas... "+JSON.stringify(error));
+				console.log("Le service B a mis trop de temps à répondre "+JSON.stringify(error));
+				this.errorB = true;
+				this.errorMsgB = "Le service B a mis trop de temps à répondre"
+				this.playing = false;
 			}
 		);
 	}
@@ -61,11 +71,14 @@ export class Home {
 		this.microServiceI.identification(this.mail, this.password).subscribe(
 			data=>{
 				console.log("Réponse du service I :" +JSON.stringify(data))
-				if(data && data.error==undefined){
+				if(data && data.error==undefined && data.errno==undefined){
 					this.id = data[0]["id_customer"];
 					this.firstname = data[0]["firstname"];
 					this.lastname = data[0]["lastname"];
 					this.getStatus();
+				}else if(data.errno){
+					this.errorI = true;
+					this.errorMsgI = "Service indisponible"
 				}else{
 					this.errorI = true;
 					this.errorMsgI = "Identifiant incorrect"
@@ -102,10 +115,16 @@ export class Home {
 		this.microServiceS.getStatus(this.id.toString()).subscribe(
 			data=>{
 				console.log("Reponse du service S : "+JSON.stringify(data))
-				this.hasPlayed = data["hasPlayed"];
-				this.hasWon = data["hasWon"];
-				if(this.hasWon){
-					this.getPrice();
+				if(data && data.error==undefined && data.errno==undefined){
+					this.hasPlayed = data["hasPlayed"];
+					this.hasWon = data["hasWon"];
+					if(this.hasWon){
+						this.getPrice();
+					}
+				}else{
+					console.log("Le service S ne répond pas... ")
+					this.errorS=true;
+					this.errorMsgS = "Le service S ne répond pas..."
 				}
 			},
 			error=>{
@@ -120,12 +139,17 @@ export class Home {
 		this.microServiceP.getPrice(this.id.toString()).subscribe(
 			data=>{
 				console.log("Reponse du service P : "+JSON.stringify(data))
-				this.gift = data["_body"]
+				if(data && data.error==undefined && data.errno==undefined){
+					this.gift = data["_body"]
+				}else{
+					this.errorP=true;
+					this.errorMsgP = "Le service P ne répond pas..."
+				}
 			},
 			error=>{
 				console.log("Le service P ne répond pas... "+JSON.stringify(error))
-				this.errorS=true;
-				this.errorMsgS = "Le service P ne répond pas..."
+				this.errorP=true;
+				this.errorMsgP = "Le service P ne répond pas..."
 			}
 		)
 	}
