@@ -12,6 +12,25 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+app.get('/allServices', function(req, res) {
+
+    console.log('allServices : '+req.params.id);
+    var id = req.params.id;
+    request("http://localhost:8500/v1/catalog/services", function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log("Reponse DNS : "+body)
+            if(body && body.length > 0){
+                res.send(body)
+            }else{
+                res.send(JSON.stringify({error:"Erreur DNS"}))
+            }
+        }else{
+            console.log(error)
+            res.send(error)
+        }
+    });
+});
+
 app.get('/play/:id', function(req, res) {
 
     console.log('play : '+req.params.id);

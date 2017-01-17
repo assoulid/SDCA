@@ -3,12 +3,13 @@ import {MicroServiceI} from "./microServiceI";
 import {MicroServiceB} from "./microServiceB";
 import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
+import {Dns} from "./Dns";
 
 @Component({
    selector: 'home',
    templateUrl : 'app/home.html', 
    styleUrls:["app/css/home.css"],
-   providers: [MicroServiceB,MicroServiceI, MicroServiceP,MicroServiceS]
+   providers: [MicroServiceB,MicroServiceI, MicroServiceP,MicroServiceS,Dns]
 })
 
 
@@ -41,8 +42,9 @@ export class Home {
     constructor(private microServiceB : MicroServiceB,
                 private microServiceI : MicroServiceI,
                 private microServiceP : MicroServiceP,
-                private microServiceS : MicroServiceS){
-
+                private microServiceS : MicroServiceS,
+                private dns : Dns){
+		this.getAllServices()
     }
 
 	play(){
@@ -159,6 +161,41 @@ export class Home {
 				console.log("Le service P ne répond pas... "+JSON.stringify(error))
 				this.errorP=true;
 				this.errorMsgP = "Le service P ne répond pas..."
+			}
+		)
+	}
+
+
+	getAllServices(){
+		this.dns.allServices().subscribe(
+			data=>{
+				if(data.b){
+					this.errorB = false;
+				}else{
+					this.errorB=true;
+					this.errorMsgB="Service B est introuvable";
+				}
+				if(data.i){
+					this.errorI = false;
+				}else{
+					this.errorI=true;
+					this.errorMsgI="Service I est introuvable";
+				}
+				if(data.s){
+					this.errorS = false;
+				}else{
+					this.errorS=true;
+					this.errorMsgS="Service S est introuvable";
+				}
+				if(data.p){
+					this.errorP = false;
+				}else{
+					this.errorP=true;
+					this.errorMsgP="Service P est introuvable";
+				}
+			},
+			error=>{
+
 			}
 		)
 	}
