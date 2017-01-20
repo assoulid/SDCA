@@ -46,9 +46,9 @@ export class Home {
                 private microServiceS: MicroServiceS,
                 private dns: Dns) {
         this.healtCheck(this)
-        if(CookieManager.checkCookie("mail") && CookieManager.checkCookie("password")){
-            this.mail = CookieManager.getCookie("mail");
-            this.password = CookieManager.getCookie("password");
+        if(CookieManager.isPresent("mail") && CookieManager.isPresent("password")){
+            this.mail = CookieManager.get("mail");
+            this.password = CookieManager.get("password");
             this.identification();
         }
 
@@ -133,8 +133,8 @@ export class Home {
         this.hasPlayed = null;
         this.hasWon = false;
         this.gift = null;
-        CookieManager.deleteCookie("mail");
-        CookieManager.deleteCookie("password");
+        CookieManager.delete("mail");
+        CookieManager.delete("password");
     }
 
     getStatus() {

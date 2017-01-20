@@ -4,11 +4,11 @@ import {Injectable} from "@angular/core";
 @Injectable()
 export class CookieManager {
     
-    static setCookie(cname:string, cvalue:string):void {
+    static set(cname:string, cvalue:string):void {
         document.cookie = cname + "=" + cvalue + ";path=/";
     }
 
-    static getCookie(cname:string):string{
+    static get(cname:string):string{
         var name = cname + "=";
         var ca = document.cookie.split(';');
         for(var i = 0; i < ca.length; i++) {
@@ -23,12 +23,12 @@ export class CookieManager {
         return "";
     }
 
-    static deleteCookie(cname:string):void {
+    static delete(cname:string):void {
         document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 
-    static checkCookie(cname:string):boolean{
-        return CookieManager.getCookie(cname) == '';
+    static isPresent(cname:string):boolean{
+        return CookieManager.get(cname) != '';
     }
 
 }
