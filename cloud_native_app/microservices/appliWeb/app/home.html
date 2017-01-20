@@ -1,62 +1,79 @@
-<h1>Projet Cloud avancé : Openstack</h1>
+<div id='appliWeb' class='animate-bottom'>
+    
+    <h1>Projet Openstack : groupe 4</h1>
 
-<h3>Micro Service I(dentification) :
-    <span [hidden]='errorI' class='runningService'>En fonctionnement</span>
-    <span [hidden]='!errorI' class='stoppedService'>Indisponible</span>
-</h3>
-
-<div *ngIf='id!=-1'>
-    <div [hidden]="errorI||errorLogin">
-        <div>Identifiant : {{id}}</div>
-        <div>Prénom : {{firstname}}</div>
-        <div>Nom : {{lastname}}</div>
-        <div>Email : {{mail}}</div>
-        <button (click)='deconnexion()'>Se déconnecter</button>
+    <div class='microService'>
+        <h3>Micro Service I(dentification) :
+            <span [hidden]='errorI' class='runningService'>En fonctionnement</span>
+            <span [hidden]='!errorI' class='stoppedService'>Indisponible</span>
+        </h3>
+        <div class='microServiceContent'>
+            <div *ngIf='id!=-1'>
+                <div [hidden]="errorI||errorLogin">
+                    <div>Identifiant : {{id}}</div>
+                    <div>Prénom : {{firstname}}</div>
+                    <div>Nom : {{lastname}}</div>
+                    <div>Email : {{mail}}</div>
+                    <button (click)='deconnexion()'>Se déconnecter</button>
+                </div>
+            </div>
+            <div *ngIf='id==-1'>
+                <div class="infoI">
+                    <label>Email</label>:
+                    <input [(ngModel)]='mail'>
+                </div>
+                <div class="infoI">
+                    <label>Mot de passe</label>:
+                    <input type='password' [(ngModel)]='password'>
+                </div>
+                <button (click)='identification()' [disabled]="errorI" [class.disabledButton]="errorI">S'identifier</button>
+            </div>
+            <div [hidden]="!errorI&&!errorLogin" class="errorMsg">
+                {{errorMsgI}}
+            </div>
+        </div>
     </div>
-</div>
-<div *ngIf='id==-1'>
-    <div class="infoI">
-        <label>Email</label>
-        <input [(ngModel)]='mail'>
+
+    <div class='microService'>
+        <h3>Micro Service S(tatus) :
+            <span [hidden]='errorS' class='runningService'>En fonctionnement</span>
+            <span [hidden]='!errorS' class='stoppedService'>Indisponible</span>
+        </h3>
+        <div class='microServiceContent'>
+            <div [hidden]="!hasPlayed||id==-1">Vous avez déjà joué</div>
+            <div [hidden]="hasPlayed||id==-1">Vous n'avez pas encore joué</div>
+            <div [hidden]="id!=-1 || errorS">Connectez vous voir votre status</div>
+            <div [hidden]='!errorS' class="errorMsg">{{errorMsgS}}</div>
+        </div> 
     </div>
-    <div class="infoI">
-        <label>Mot de passe</label>
-        <input type='password' [(ngModel)]='password'>
+
+    <div class='microService'>
+        <h3>Micro Service B(utton) :
+            <span [hidden]='errorB' class='runningService'>En fonctionnement</span>
+            <span [hidden]='!errorB' class='stoppedService'>Indisponible</span>
+        </h3>
+        <div class='microServiceContent'>
+            <div id='playZone'>
+                <button id="playButton" (click)="play()" [disabled]="hasPlayed||id==-1||playing||errorB" [class.disabledButton]="hasPlayed||id==-1||playing||errorB">Jouer</button>
+                <div class="loader" *ngIf='playing'></div>
+            </div>
+            <div [hidden]="id!=-1 || errorB">Connectez vous pour jouer</div>
+            <div [hidden]='!errorB' class="errorMsg">{{errorMsgB}}</div>
+        </div>
     </div>
-    <button (click)='identification()' [disabled]="errorI">S'identifier</button>
+
+    <div class='microService'>
+        <h3>Micro Service P(icture) :
+            <span [hidden]='errorP' class='runningService'>En fonctionnement</span>
+            <span [hidden]='!errorP' class='stoppedService'>Indisponible</span>
+        </h3>
+        <div class='microServiceContent'>
+            <div [hidden]='!errorP' class="errorMsg">{{errorMsgP}}</div>
+            <div [hidden]='id!=-1 || errorP'>Connectez vous pour voir votre cadeau</div>
+            <div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore jouez</div>
+            <div [hidden]='!hasPlayed||hasWon||(id==-1) || errorP'>Vous n'avez rien gagné</div>
+            <img id='price' *ngIf='hasPlayed&&hasWon&&id!=-1' src='data:image/gif;base64,{{gift}}'/>
+        </div>
+    </div>
+
 </div>
-<div [hidden]="!errorI&&!errorLogin" class="errorMsgI">
-    {{errorMsgI}}
-</div>
-
-<h3>Micro Service S(tatus) :
-    <span [hidden]='errorS' class='runningService'>En fonctionnement</span>
-    <span [hidden]='!errorS' class='stoppedService'>Indisponible</span>
-</h3>
-<div [hidden]="!hasPlayed||id==-1">Vous avez déjà joué</div>
-<div [hidden]="hasPlayed||id==-1">Vous n'avez pas encore joué</div>
-<div [hidden]="id!=-1 || errorS">Connectez vous voir votre status</div>
-<div [hidden]='!errorS'>{{errorMsgS}}</div>
-
-
-<h3>Micro Service B(utton) :
-    <span [hidden]='errorB' class='runningService'>En fonctionnement</span>
-    <span [hidden]='!errorB' class='stoppedService'>Indisponible</span>
-</h3>
-<div id='playZone'>
-    <button id="playButton" (click)="play()" [disabled]="hasPlayed||id==-1||playing">Jouer</button>
-    <div class="loader" *ngIf='playing'></div>
-</div>
-<div [hidden]="id!=-1 || errorB">Connectez vous pour jouer</div>
-<div [hidden]='!errorB'>{{errorMsgB}}</div>
-
-
-<h3>Micro Service P(icture) :
-    <span [hidden]='errorP' class='runningService'>En fonctionnement</span>
-    <span [hidden]='!errorP' class='stoppedService'>Indisponible</span>
-</h3>
-<div [hidden]='!errorP'>{{errorMsgP}}</div>
-<div [hidden]='id!=-1 || errorP'>Connectez vous pour voir votre cadeau</div>
-<div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore jouez</div>
-<div [hidden]='!hasPlayed||hasWon||(id==-1) || errorP'>Vous n'avez rien gagné</div>
-<img id='price' *ngIf='hasPlayed&&hasWon&&id!=-1' src='data:image/gif;base64,{{gift}}'/>

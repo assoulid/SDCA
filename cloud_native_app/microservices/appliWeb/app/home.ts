@@ -8,7 +8,7 @@ import {Dns} from "./dns";
 @Component({
     selector: 'home',
     templateUrl: 'app/home.html',
-    styleUrls: ["app/css/home.css"],
+    styleUrls: ["app/css/home.css","app/css/cloud.css"],
     providers: [MicroServiceB, MicroServiceI, MicroServiceP, MicroServiceS, Dns]
 })
 
