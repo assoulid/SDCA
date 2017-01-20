@@ -20,11 +20,11 @@
             <div *ngIf='id==-1'>
                 <div class="infoI">
                     <label>Email</label>:
-                    <input [(ngModel)]='mail'>
+                    <input id='mail' [(ngModel)]='mail'>
                 </div>
                 <div class="infoI">
                     <label>Mot de passe</label>:
-                    <input type='password' [(ngModel)]='password'>
+                    <input id='password' type='password' [(ngModel)]='password'>
                 </div>
                 <button (click)='identification()' [disabled]="errorI" [class.disabledButton]="errorI">S'identifier</button>
             </div>

@@ -4,6 +4,7 @@ import {MicroServiceB} from "./microServiceB";
 import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
 import {Dns} from "./dns";
+import {CookieManager} from "./cookieManager";
 
 @Component({
     selector: 'home',
@@ -45,6 +46,11 @@ export class Home {
                 private microServiceS: MicroServiceS,
                 private dns: Dns) {
         this.healtCheck(this)
+        if(CookieManager.checkCookie("mail") && CookieManager.checkCookie("password")){
+            this.mail = CookieManager.getCookie("mail");
+            this.password = CookieManager.getCookie("password");
+            this.identification();
+        }
 
     }
 
@@ -127,6 +133,8 @@ export class Home {
         this.hasPlayed = null;
         this.hasWon = false;
         this.gift = null;
+        CookieManager.deleteCookie("mail");
+        CookieManager.deleteCookie("password");
     }
 
     getStatus() {
