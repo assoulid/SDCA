@@ -106,7 +106,7 @@ La commande suivante donne des infiormations sur un service particulier:
 
 N.B: Les commandes doivent etres lancées à partir d'une instance ayant lancé un agent consul et ayant rejoint le cluster.
 
-## Licence
+## License
 
 This project is licensed under the terms of the
 [MIT license](http://opensource.org/licenses/MIT).
