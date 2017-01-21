@@ -4,11 +4,12 @@ import {MicroServiceB} from "./microServiceB";
 import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
 import {Dns} from "./dns";
+import {CookieManager} from "./cookieManager";
 
 @Component({
     selector: 'home',
     templateUrl: 'app/home.html',
-    styleUrls: ["app/css/home.css"],
+    styleUrls: ["app/css/home.css","app/css/cloud.css"],
     providers: [MicroServiceB, MicroServiceI, MicroServiceP, MicroServiceS, Dns]
 })
 
@@ -45,6 +46,11 @@ export class Home {
                 private microServiceS: MicroServiceS,
                 private dns: Dns) {
         this.healtCheck(this)
+        if(CookieManager.isPresent("mail") && CookieManager.isPresent("password")){
+            this.mail = CookieManager.get("mail");
+            this.password = CookieManager.get("password");
+            this.identification();
+        }
 
     }
 
@@ -127,6 +133,8 @@ export class Home {
         this.hasPlayed = null;
         this.hasWon = false;
         this.gift = null;
+        CookieManager.delete("mail");
+        CookieManager.delete("password");
     }
 
     getStatus() {
