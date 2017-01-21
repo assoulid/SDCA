@@ -12,16 +12,25 @@ console.log(" test", host, port, "\n");
 var serveur = http.createServer(function (req, res) {
     if (req.method === 'POST') {
 
-        request("http://localhost:8500/v1/catalog/service/mysql", function (error, response, body) {
-
+        request("http://localhost:8500/v1/health/service/mysql", function (error, response, body) {
             console.log(body);
+
+            var service_health_info = JSON.parse(body);
+
+            var passing_hosts = service_health_info.filter(function (x) {
+                return x["Checks"].filter(function (y) {
+                        return ((y["ServiceName"] === "mysql") && (y["Status"] === "passing"))
+                    }).length != 0
+            });
+
+            console.log(passing_hosts)
 
             if (error) {
                 console.log(error)
             }
             else {
-                host = JSON.parse(body)[0]["Address"];
-                port = JSON.parse(body)[0]["ServicePort"];
+                host = passing_hosts[0].Node.Address;
+                port = passing_hosts[0].Service.Port;
 
                 console.log(host, port, "\n");
 
@@ -55,13 +64,13 @@ var serveur = http.createServer(function (req, res) {
                         if (!err) {
                             if (rows.length == 0) {
                                 console.log('Pas de correspondance: ' + parsedbody['login'] + "/" + parsedbody['password']);
-                                res.end(JSON.stringify({error:'Pas de correspondance'}));
+                                res.end(JSON.stringify({error: 'Pas de correspondance'}));
                             } else {
                                 console.log('The solution is: ', rows);
                                 res.end(JSON.stringify(rows));
                             }
                         } else {
-                            console.log({error:'Error while performing Query.'});
+                            console.log({error: 'Error while performing Query.'});
                             res.end(err);
                         }
                     });

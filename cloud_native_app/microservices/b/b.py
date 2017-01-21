@@ -127,33 +127,18 @@ def update_user_status(id, player_won):
 
 
 def get_service_instance(service_name):
+    service_health_info = requests.get('http://localhost:8500/v1/health/service/{}'.format(service_name)).json()
 
-    # passing_serices = requests.get('http://localhost:8500/v1/health/state/passing').json()
+    passing_hosts = list(filter(
+        lambda x: len(
+            list(filter(lambda y: y["ServiceName"] == service_name and y["Status"] == "passing", x["Checks"]))) != 0,
+        service_health_info))
 
+    if len(passing_hosts) == 0:
+        raise Exception("No available {} instances".format(service_name))
 
-    service_info = requests.get('http://localhost:8500/v1/catalog/service/{}'.format(service_name)).json()
-    """
-        w_info example output:
-        [
-            {
-                "Address": "10.0.1.78",
-                "CreateIndex": 62,
-                "ModifyIndex": 409,
-                "Node": "w-0",
-                "ServiceAddress": "",
-                "ServiceEnableTagOverride": false,
-                "ServiceID": "w",
-                "ServiceName": "w",
-                "ServicePort": 8090,
-                "ServiceTags": [],
-                "TaggedAddresses": {
-                    "lan": "10.0.1.78",
-                    "wan": "10.0.1.78"
-                }
-            }
-        ]
-    """
-    host, port = service_info[0]['Address'], service_info[0]['ServicePort']
+    host, port = passing_hosts[0]["Node"]["Address"], passing_hosts[0]["Service"]["Port"]
+
     return host, port
 
 
