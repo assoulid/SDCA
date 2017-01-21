@@ -41,6 +41,18 @@ def api_root():
     return resp
 
 
+def notify_admin(id, player_won):
+    mailgun_key = os.environ['MG_KEY']
+    mailgun_domain = os.environ['MG_DOMAIN']
+    payload = {
+        'from': 'Ensimag G4 <nahyl.othmane@gmail.com>',
+        'to': 'nahyl.othmane@gmail.com',
+        'subject': 'player with id {} played'.format(id),
+        'text': 'Player with id {} played '.format(id) + ('and won' if player_won else 'but didn\'t win')
+    }
+    requests.post(mailgun_domain, auth=('api', mailgun_key), data=payload)
+
+
 @app.route("/play/<id>")
 def api_play(id):
     try:
@@ -59,6 +71,7 @@ def api_play(id):
         return resp
 
     resp = get_response(True, player_won)
+    notify_admin(id, player_won)
     return resp
 
 

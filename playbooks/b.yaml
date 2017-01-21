@@ -3,6 +3,9 @@
   user: centos
   vars:
    os_pass: "{{ lookup('env','OS_PASSWORD') }}"
+   mg_key: "{{ lookup('env','MG_KEY') }}"
+   mg_domain: "{{ lookup('env','MG_DOMAIN') }}"
+
   tasks:
 
     - name: Send b microservice directory
@@ -34,7 +37,7 @@
 
     - name: Run b docker container
       shell:
-        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 8090:8090 -p 8500:8500 -p 5000:5000 b:b
+        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -e MG_KEY={{ mg_key }} -e MG_DOMAIN={{ mg_domain }} -d -p 8090:8090 -p 8500:8500 -p 5000:5000 b:b
       become: true
 
     - name: Register b service
