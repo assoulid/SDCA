@@ -111,7 +111,7 @@ def get_keystone_token():
 
 
 def update_user_status(id, player_won):
-    mysql_instance_host, mysql_port = get_service_instance('s_mysql')
+    mysql_instance_host, mysql_port = get_service_instance('mysql')
 
     mysql_connection = connector.connect(host=mysql_instance_host, port=mysql_port,
                                          user='root', password='group4',
