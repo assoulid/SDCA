@@ -16,17 +16,11 @@ parameters:
     default: 1
     description: Number of s instances to deploy
 
-  s_mysql_instances_count:
+  galera_instances_count:
     type: number
-    label: Mysql instances count for s service
+    label: Galera instances count
     default: 1
-    description: Number of mysql instances to deploy
-
-  mysql_instances_count:
-    type: number
-    label: Mysql instances count
-    default: 1
-    description: Number of mysql instances to deploy
+    description: Number of galera instances to deploy
 
 resources:
 
@@ -57,27 +51,23 @@ resources:
           instance_index: "%index%"
           network: critical_network
 
-  s_mysql_servers:
-    type: OS::Heat::ResourceGroup
+  galera_first_node_server:
+    type: instance_with_volume.yaml
     depends_on: critical_net
     properties:
-      count: { get_param: s_mysql_instances_count }
-      resource_def:
-        type: instance_with_volume.yaml
-        properties:
-          service_name: "s_mysql"
-          instance_index: "%index%"
-          network: critical_network
+      service_name: "galera_f"
+      instance_index: "0"
+      network: critical_network
 
-  mysql_servers:
+  galera_other_node_servers:
     type: OS::Heat::ResourceGroup
     depends_on: critical_net
     properties:
-      count: { get_param: mysql_instances_count }
+      count: { get_param: galera_instances_count }
       resource_def:
         type: instance_with_volume.yaml
         properties:
-          service_name: "mysql"
+          service_name: "galera_o"
           instance_index: "%index%"
           network: critical_network
 
@@ -90,11 +80,10 @@ outputs:
     description: IP addresses of s
     value: { get_attr: [ s_servers, ip_addresses ] }
 
+  galera_first_node_server:
+    description: IP address of galera_first_node instances
+    value: { get_attr: [ galera_first_node_server, ip_addresses ] }
 
-  s_mysql_adresses:
-    description: IP addresses of s mysql instances
-    value: { get_attr: [ s_mysql_servers, ip_addresses ] }
-
-  mysql_adresses:
-    description: IP addresses of mysql instances
-    value: { get_attr: [ mysql_servers, ip_addresses ] }
+  galera_other_node_servers:
+    description: IP addresses of galera other nodes
+    value: { get_attr: [ galera_other_node_servers, ip_addresses ] }

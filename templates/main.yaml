@@ -21,12 +21,6 @@ parameters:
     default: 1
     description: Number of s instances to deploy
 
-  s_mysql_instances_count:
-    type: number
-    label: Mysql instances count for s service
-    default: 1
-    description: Number of mysql instances to deploy
-
   b_instances_count:
     type: number
     label: B instances count
@@ -45,11 +39,11 @@ parameters:
     default: 1
     description: Number of i instances to deploy
 
-  mysql_instances_count:
+  galera_instances_count:
     type: number
-    label: Mysql instances count
-    default: 1
-    description: Number of mysql instances to deploy
+    label: Galera instances count
+    default: 2
+    description: Number of galera instances to deploy
 
   appliWeb_instances_count:
     type: number
@@ -64,8 +58,7 @@ resources:
     properties:
       w_instances_count: { get_param: w_instances_count }
       s_instances_count: { get_param: s_instances_count }
-      s_mysql_instances_count: { get_param: s_mysql_instances_count }
-      mysql_instances_count: { get_param: mysql_instances_count }
+      galera_instances_count: { get_param: galera_instances_count }
 
   consul_servers:
     type: OS::Heat::ResourceGroup
@@ -112,7 +105,7 @@ resources:
     properties:
       count: { get_param: appliWeb_instances_count }
       resource_def:
-        type: instance_with_volume.yaml
+        type: instance_with_floating_ip.yaml
         properties:
           service_name: "appliWeb"
           instance_index: "%index%"
@@ -142,13 +135,13 @@ outputs:
     description: IP addresses of consul_servers
     value: { get_attr: [ consul_servers, ip_addresses ] }
 
-  mysql:
-    description: IP addresses of mysql instances
-    value: { get_attr: [ critical_components, mysql_adresses ] }
+  galera_other_node:
+    description: IP addresses of galera_other_node instances
+    value: { get_attr: [ critical_components, galera_other_node_servers ] }
 
-  s_mysql:
-    description: IP addresses of mysql instances
-    value: { get_attr: [ critical_components, s_mysql_adresses ] }
+  galera_first_node:
+    description: IP addresses of galera_first_node instances
+    value: { get_attr: [ critical_components, galera_first_node_server ] }
 
   appliWeb:
     description: IP addresses of appliWeb instances

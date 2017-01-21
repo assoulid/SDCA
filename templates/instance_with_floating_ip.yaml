@@ -1,0 +1,62 @@
+heat_template_version: 2015-04-30
+
+description: Template for service with volume
+
+parameters:
+
+  service_name:
+    type: string
+    description: Name of microservice
+
+  instance_index:
+    type: string
+    description: Index of instance
+
+  network:
+    type: string
+    description: Instance network
+    default: "ReseauGroupe4"
+
+  flavor:
+    type: string
+    description: Flavor of instance
+    default: m1.small
+
+resources:
+
+  instance_volume:
+    type: OS::Cinder::Volume
+    properties:
+      name:
+        list_join: ['_', [{ get_param: service_name }, { get_param: instance_index }]]
+      image: centos7
+      size: 10
+
+  instance:
+    type: OS::Nova::Server
+    properties:
+      name:
+        list_join: ['_', [{ get_param: service_name }, { get_param: instance_index }]]
+      key_name: cle_bastion
+      image: centos7
+      flavor: { get_param: flavor }
+      block_device_mapping: [{"delete_on_termination": false,"device_name": /dev/vda,"volume_id": { get_resource: instance_volume },"volume_size": 10}]
+      networks:
+        - network: { get_param: network }
+
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: external-network
+
+  association:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: floating_ip }
+      port_id: {get_attr: [instance, addresses, { get_param: network }, 0, port]}
+
+
+outputs:
+  ip_addresses:
+    description: IP addresses
+    value: { get_attr: [ instance, first_address ] }
