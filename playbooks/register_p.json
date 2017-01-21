@@ -1,8 +1,0 @@
-{
-  "Name": "p",
-  "Port": 8090,
-  "Check": {
-    "HTTP": "http://localhost:8090/",
-    "Interval": "10s"
-  }
-}

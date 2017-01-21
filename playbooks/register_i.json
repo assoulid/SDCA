@@ -1,8 +1,0 @@
-{
-  "Name": "i",
-  "Port": 3000,
-  "Check": {
-    "HTTP": "http://localhost:3000/",
-    "Interval": "10s"
-  }
-}
