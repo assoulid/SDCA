@@ -1,0 +1,56 @@
+---
+- hosts: s_mysql
+  user: centos
+  vars:
+    mysql_password: "group4"
+  tasks:
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    - name: Stop s_mysql docker container if already running
+      shell:
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q --filter ancestor=s_mysql))
+      ignore_errors: yes
+
+    - name: Run s_mysql docker container
+      shell:
+        cmd: docker run --network="host" -e MYSQL_ROOT_PASSWORD={{ mysql_password }} -e MYSQL_DATABASE=prestashop -d -p 3306:3306 mysql
+      become: true
+
+    #TODO: Mysql healt check
+    - name: Register s_mysql service
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_s_mysql.json') }}"
+        body_format: json
+
+    - name: Install mysql client
+      yum:
+        name: mysql
+        state: latest
+      become: true
+
+    - name: Copy mysql conf file
+      copy:
+        src: ../db_dump/.my.cnf
+        dest: /home/centos
+
+    - name: Copy database dump file
+      copy:
+        src: ../db_dump/status_db.dump.sql
+        dest: /tmp
+
+    - name: Load database
+      shell:
+        cmd: mysql prestashop < /tmp/status_db.dump.sql

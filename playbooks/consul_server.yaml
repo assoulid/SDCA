@@ -1,0 +1,8 @@
+---
+- hosts: consul_server
+  user: centos
+  tasks:
+
+    - name: Run consul server
+      shell:
+        cmd: screen -m -d consul agent -server -bootstrap-expect=1 -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }}

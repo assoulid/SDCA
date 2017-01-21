@@ -1,0 +1,43 @@
+---
+- hosts: w
+  user: centos
+  tasks:
+
+    - name: Send w microservice directory
+      copy:
+        src: ../cloud_native_app/microservices/w
+        dest: /home/centos/
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    - name: Stop w docker container if already running
+      shell:
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=w:w))
+      ignore_errors: yes
+
+    - name: Build w docker image
+      shell:
+        chdir: ~/w
+        cmd: sudo docker build -t w:w .
+
+    - name: Run w docker container
+      shell:
+        cmd: docker run --network="host" -d -p 8090:8090 -p 8500:8500 w:w
+      become: true
+
+    - name: Register w service
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_w.json') }}"
+        body_format: json

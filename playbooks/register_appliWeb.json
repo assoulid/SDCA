@@ -1,0 +1,8 @@
+{
+  "Name": "appliWeb",
+  "Port": 80,
+  "Check": {
+    "HTTP": "http://localhost:80/",
+    "Interval": "10s"
+  }
+}

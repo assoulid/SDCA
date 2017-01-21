@@ -1,0 +1,8 @@
+{
+  "Name": "s",
+  "Port": 3220,
+  "Check": {
+    "HTTP": "http://localhost:3220/",
+    "Interval": "10s"
+  }
+}

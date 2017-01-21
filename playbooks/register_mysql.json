@@ -1,0 +1,8 @@
+{
+  "Name": "mysql",
+  "Port": 3306,
+  "Check": {
+    "tcp": "localhost:3306",
+    "interval": "10s"
+  }
+}

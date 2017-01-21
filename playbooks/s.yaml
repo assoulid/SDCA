@@ -1,0 +1,45 @@
+---
+- hosts: s
+  user: centos
+  vars:
+   os_pass: "{{ lookup('env','OS_PASSWORD') }}"
+  tasks:
+
+    - name: Send s microservice directory
+      copy:
+        src: ../cloud_native_app/microservices/s
+        dest: /home/centos/
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    - name: Stop s docker container if already running
+      shell:
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=s:s))
+      ignore_errors: yes
+
+    - name: Build s docker image
+      shell:
+        chdir: ~/s
+        cmd: sudo docker build -t s:s .
+
+    - name: Run s docker container
+      shell:
+        cmd: docker run --network="host" -e OS_PASSWORD={{ os_pass }} -d -p 3220:3220 -p 5000:5000 s:s
+      become: true
+
+    - name: Register s service
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_s.json') }}"
+        body_format: json

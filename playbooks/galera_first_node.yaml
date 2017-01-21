@@ -1,0 +1,49 @@
+---
+- hosts: galera_first_node
+  user: centos
+  tasks:
+
+    - name: Install pexpect
+      easy_install:
+        name: pexpect
+      become: true
+
+    - name: Bootstrap first node
+      shell:
+        cmd: systemctl start mysql@bootstrap.service
+      become: true
+
+    - name: Configure users
+      expect:
+        command: mysql --silent -uroot
+        responses:
+          "mysql> ": "UPDATE mysql.user SET password=PASSWORD('group4') where user='root';FLUSH PRIVILEGES;CREATE USER 'sst_user'@'localhost' IDENTIFIED BY 'sst_user';GRANT PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'sst_user'@'localhost';FLUSH PRIVILEGES;GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'group4' WITH GRANT OPTION;FLUSH PRIVILEGES;create database prestashop;exit;\r"
+
+    - name: Copy database dump file
+      copy:
+        src: ../db_dump/prestashop_fullcustomer.dump.sql
+        dest: /tmp
+
+    - name: Load database
+      shell:
+        cmd: mysql -uroot -pgroup4 prestashop < /tmp/prestashop_fullcustomer.dump.sql
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    #TODO: Mysql healt check
+    - name: Register mysql service
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_mysql.json') }}"
+        body_format: json

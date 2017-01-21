@@ -1,0 +1,45 @@
+---
+- hosts: i
+  user: centos
+  vars:
+   os_pass: "{{ lookup('env','OS_PASSWORD') }}"
+  tasks:
+
+    - name: Send i microservice directory
+      copy:
+        src: ../cloud_native_app/microservices/i
+        dest: /home/centos/
+
+    - name: Run consul agent and join cluster
+      shell:
+        cmd: screen -m -d consul agent -data-dir=/var/consul.d -config-dir=/etc/consul.d -bind={{ ansible_eth0.ipv4.address }} -join={{ groups['consul_server'][0] }}
+
+    - name: Wait for agent to run or fail
+      shell:
+        cmd: consul members
+      register: result
+      until: result.stdout.find("{{ inventory_hostname }}") != -1
+      retries: 5
+      delay: 5
+
+    - name: Stop i docker container if already running
+      shell:
+        cmd: sudo docker rm $(sudo docker stop $(sudo docker ps -a -q  --filter ancestor=i:i))
+      ignore_errors: yes
+
+    - name: Build i docker image
+      shell:
+        chdir: ~/i
+        cmd: sudo docker build -t i:i .
+
+    - name: Run i docker container
+      shell:
+        cmd: docker run --network="host" -d -p 8500:8500 -p 3000:3000 i:i
+      become: true
+
+    - name: Register i service
+      uri:
+        url: http://localhost:8500/v1/agent/service/register
+        method: PUT
+        body: "{{ lookup('file','register_i.json') }}"
+        body_format: json
