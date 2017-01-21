@@ -25,14 +25,23 @@ ansible-playbook ../playbooks/p.yaml --ssh-common-args='-o IdentityFile=~/.ssh/c
 #Run s playbook
 ansible-playbook ../playbooks/s.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > s.out &
 
-#Run mysql playbook
-ansible-playbook ../playbooks/mysql.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > mysql.out &
-
-#Run s_mysql playbook
-ansible-playbook ../playbooks/s_mysql.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > s_mysql.out &
-
 #Run appliWeb playbook
 ansible-playbook ../playbooks/appliWeb.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > appliWeb.out &
 
 #Run i playbook
 ansible-playbook ../playbooks/i.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > i.out &
+
+
+
+#Run galera all nodes playbook
+echo 'Running galera_all_nodes.yaml playbook. See galera_all_nodes.out for command output'
+ansible-playbook ../playbooks/galera_all_nodes.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > galera_all_nodes.out
+
+#Run galera first node playbook
+echo 'Running galera_first_node.yaml playbook. See galera_first_node.out for command output'
+ansible-playbook ../playbooks/galera_first_node.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > galera_first_node.out
+
+#Run galera other node playbook
+echo 'Running galera_other_node.yaml playbook. See galera_other_node.out for command output'
+ansible-playbook ../playbooks/galera_other_node.yaml --ssh-common-args='-o IdentityFile=~/.ssh/cle_bastion' > galera_other_node.out &
+
