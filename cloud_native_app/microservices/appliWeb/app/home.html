@@ -70,7 +70,7 @@
         <div class='microServiceContent'>
             <div [hidden]='!errorP' class="errorMsg">{{errorMsgP}}</div>
             <div [hidden]='id!=-1 || errorP'>Connectez vous pour voir votre cadeau</div>
-            <div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore jouez</div>
+            <div [hidden]='hasPlayed||(id==-1)'>Vous n'avez pas encore joué</div>
             <div [hidden]='!hasPlayed||hasWon||(id==-1) || errorP'>Vous n'avez rien gagné</div>
             <img id='price' *ngIf='hasPlayed&&hasWon&&id!=-1' src='data:image/jpeg;base64,{{gift}}'/>
         </div>
