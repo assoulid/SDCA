@@ -9,7 +9,7 @@ import {CookieManager} from "./cookieManager";
 @Component({
     selector: 'home',
     templateUrl: 'app/home.html',
-    styleUrls: ["app/css/home.css","app/css/cloud.css"],
+    styleUrls: ["app/css/home.css", "app/css/cloud.css"],
     providers: [MicroServiceB, MicroServiceI, MicroServiceP, MicroServiceS, Dns]
 })
 
@@ -46,7 +46,7 @@ export class Home {
                 private microServiceS: MicroServiceS,
                 private dns: Dns) {
         this.healtCheck(this)
-        if(CookieManager.isPresent("mail") && CookieManager.isPresent("password")){
+        if (CookieManager.isPresent("mail") && CookieManager.isPresent("password")) {
             this.mail = CookieManager.get("mail");
             this.password = CookieManager.get("password");
             this.identification();
@@ -97,6 +97,8 @@ export class Home {
                     this.errorI = false;
                     this.errorLogin = false;
                     this.getStatus();
+                    CookieManager.set("mail", this.mail);
+                    CookieManager.set("password", this.password)
                 } else if (data.errno) {
                     this.errorLogin = false;
                     this.errorI = true;
