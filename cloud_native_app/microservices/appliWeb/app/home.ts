@@ -5,7 +5,6 @@ import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
 import {Dns} from "./dns";
 import {CookieManager} from "./cookieManager";
-import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'home',
@@ -45,8 +44,7 @@ export class Home {
                 private microServiceI: MicroServiceI,
                 private microServiceP: MicroServiceP,
                 private microServiceS: MicroServiceS,
-                private dns: Dns,
-                private sanitizer: DomSanitizer) {
+                private dns: Dns) {
         this.healtCheck(this)
         if (CookieManager.isPresent("mail") && CookieManager.isPresent("password")) {
             this.mail = CookieManager.get("mail");
