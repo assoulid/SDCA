@@ -5,6 +5,7 @@ import {MicroServiceP} from "./microServiceP";
 import {MicroServiceS} from "./microServiceS";
 import {Dns} from "./dns";
 import {CookieManager} from "./cookieManager";
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'home',
@@ -44,7 +45,8 @@ export class Home {
                 private microServiceI: MicroServiceI,
                 private microServiceP: MicroServiceP,
                 private microServiceS: MicroServiceS,
-                private dns: Dns) {
+                private dns: Dns,
+                private sanitizer: DomSanitizer) {
         this.healtCheck(this)
         if (CookieManager.isPresent("mail") && CookieManager.isPresent("password")) {
             this.mail = CookieManager.get("mail");
@@ -169,7 +171,7 @@ export class Home {
             data=> {
                 console.log("Reponse du service P : " + JSON.stringify(data))
                 if (data && data.error == undefined && data.errno == undefined &&
-                    data["_body"] && data["_body"].substr(data["_body"].length - 1) === "=") {
+                    data["_body"]) {
                     this.gift = data["_body"]
                     this.errorP = false;
                 } else {
