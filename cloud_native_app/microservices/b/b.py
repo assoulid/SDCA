@@ -58,20 +58,16 @@ def api_play(id):
     try:
         w_instance_host, w_port = get_service_instance('w')
         result = requests.get('http://{}:{}/play/{}'.format(w_instance_host, w_port, id)).text
+        send_result_to_swift(id, result)
 
-        player_won = random.choice([True, False])
-
-        if player_won:
-            send_result_to_swift(id, result)
-
-        update_user_status(id, player_won)
+        update_user_status(id, True)
 
     except:
         resp = get_response(False, None)
         return resp
 
-    resp = get_response(True, player_won)
-    notify_admin(id, player_won)
+    resp = get_response(True, True)
+    notify_admin(id, True)
     return resp
 
 
