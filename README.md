@@ -22,7 +22,7 @@ A partir de là, on peut :
 
 ```
 ssh -i keys/cle_bastion ubuntu@<ip>
-sudo apt install python-pip && sudo apt install python-openstackclient
+sudo apt install python-pip && sudo pip install python-openstackclient && sudo pip install python-heatclient
 ```
 
 Depuis votre ordi : `scp -i keys/cle_bastion ressources/project4-openrc.sh ubuntu@<ip>`
