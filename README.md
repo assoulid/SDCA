@@ -27,11 +27,17 @@ sudo apt install python-pip && sudo pip install python-openstackclient && sudo p
 
 Depuis votre ordi : `scp -i keys/cle_bastion ressources/project4-openrc.sh ubuntu@<ip>`
 
-Puis depuis le bastion : `source project4-openrc.sh` et entrer le mdp (envoyé sur vos mails)
+Puis depuis le bastion :
+
+ -> `git clone https://github.com/assoulid/SDCA.git`
+
+ -> `source SDCA/ressources/project4-openrc.sh` et entrer le mdp (envoyé sur vos mails)
+
+ -> `source SDCA/ressources/mailgun_env.sh`
 
 La commande suivante devrait marcher. Elle liste les vm de l'openstack.
 ```
-openstack server list --insecure
+openstack server list
 ```
 
 ## Script de provisionnement des instances
